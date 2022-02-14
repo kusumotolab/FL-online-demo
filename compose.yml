@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend/
+    image: fl-online-demo-frontend
+  backend:
+    build:
+      context: ./backend/
+    image: fl-online-demo-backend
