@@ -3,6 +3,7 @@ services:
   frontend:
     build:
       context: ./frontend/
+    working_dir: /frontend/
     image: fl-online-demo-frontend
   backend:
     build:
