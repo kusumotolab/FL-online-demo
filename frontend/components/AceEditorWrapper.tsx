@@ -1,16 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import { IAceEditorProps, IAceOptions } from "react-ace";
 import { Ace } from "ace-builds";
+import dynamic from "next/dynamic";
+import { useCallback, useEffect, useState } from "react";
+import { IAceEditorProps, IAceOptions } from "react-ace";
 
-const AceEditor = dynamic(async () => {
-  const ace = await import('react-ace');
-  await import("ace-builds/src-noconflict/mode-java");
-  await import("ace-builds/src-noconflict/theme-xcode");
-  await import("ace-builds/src-noconflict/snippets/java");
-  await import("ace-builds/src-noconflict/ext-language_tools");
-  return ace;
-}, { ssr: false });
+const AceEditor = dynamic(
+  async () => {
+    const ace = await import("react-ace");
+    await import("ace-builds/src-noconflict/mode-java");
+    await import("ace-builds/src-noconflict/theme-xcode");
+    await import("ace-builds/src-noconflict/snippets/java");
+    await import("ace-builds/src-noconflict/ext-language_tools");
+    return ace;
+  },
+  { ssr: false },
+);
 
 function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEditorProps) {
   const defaultOptions: IAceOptions = {
@@ -20,21 +23,21 @@ function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEdit
     printMargin: false,
     useSoftTabs: true,
     tabSize: 2,
-    fontSize: '1rem',
-    cursorStyle: undefined
-  }
+    fontSize: "1rem",
+    cursorStyle: undefined,
+  };
   const readonlyOptions: IAceOptions = {
     readOnly: true,
     highlightActiveLine: false,
     highlightGutterLine: false,
-  }
+  };
 
   const [options, setOptions] = useState(defaultOptions);
   useEffect(() => {
-    if(readOnly) {
-      setOptions({...defaultOptions, ...readonlyOptions})
+    if (readOnly) {
+      setOptions({ ...defaultOptions, ...readonlyOptions });
     } else {
-      setOptions(defaultOptions)
+      setOptions(defaultOptions);
     }
   }, [readOnly]);
 
@@ -45,7 +48,9 @@ function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEdit
       } else {
         editor.renderer.$cursorLayer.element.style.display = "true";
       }
-    }, [readOnly]);
+    },
+    [readOnly],
+  );
 
   return (
     <AceEditor
@@ -64,7 +69,7 @@ function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEdit
       enableLiveAutocompletion
       enableSnippets
     />
-  )
+  );
 }
 
 export default AceEditorWrapper;
