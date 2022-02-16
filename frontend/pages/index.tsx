@@ -1,5 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
+import { default as AceEditor } from '../components/AceEditorWrapper'
 import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {
@@ -27,17 +28,17 @@ const Home: NextPage = () => {
         <div className={styles.editors}>
             <div className={styles.editor}>
                 <div className={styles.header}>Source</div>
-                <div id={styles.src} className={styles.ace}></div>
+                <AceEditor className={styles.ace} name="src" />
             </div>
             <div className={`${styles.editor} ${styles.editorRight}`}>
                 <div className={styles.header}>Test</div>
-                <div id={styles.test} className={styles.ace}></div>
+                <AceEditor className={styles.ace} name="test" />
             </div>
         </div>
         <div className={styles.editors}>
             <div className={`${styles.editor} ${styles.editorConsole}`}>
                 <div className={styles.header}>Console</div>
-                <div id={styles.console} className={styles.ace}></div>
+                <AceEditor className={styles.ace} name="console" readOnly={true} />
             </div>
         </div>
       </main>
