@@ -1,3 +1,4 @@
+import Button from "../components/Button";
 import Editors from "../components/Editors";
 import styles from "../styles/Home.module.css";
 import type { NextPage } from "next";
@@ -23,19 +24,13 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div id={styles.ctrl}>
-          <button id={styles.run} className={`${styles.btn} ${styles.btnRun}`}>
-            Repair
-          </button>
-          <button className={`${styles.btn} ${styles.btnOther}`} disabled={true}>
+          <Button className={styles.btn}>Repair</Button>
+          <Button className={styles.btn} disabled={true}>
             # dummy
-          </button>
-          <button
-            id={styles.refresh}
-            className={`${styles.btn} ${styles.btnOther}`}
-            disabled={true}
-          >
+          </Button>
+          <Button className={styles.btn} disabled={true}>
             # dummy
-          </button>
+          </Button>
         </div>
         <Editors />
       </main>
