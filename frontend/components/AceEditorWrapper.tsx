@@ -7,6 +7,8 @@ const AceEditor = dynamic(async () => {
   const ace = await import('react-ace');
   await import("ace-builds/src-noconflict/mode-java");
   await import("ace-builds/src-noconflict/theme-xcode");
+  await import("ace-builds/src-noconflict/snippets/java");
+  await import("ace-builds/src-noconflict/ext-language_tools");
   return ace;
 }, { ssr: false });
 
@@ -58,6 +60,9 @@ function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEdit
         if (typeof onLoad !== "undefined") onLoad(editor);
       }}
       {...other}
+      enableBasicAutocompletion
+      enableLiveAutocompletion
+      enableSnippets
     />
   )
 }
