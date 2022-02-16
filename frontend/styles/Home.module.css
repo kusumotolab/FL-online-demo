@@ -2,7 +2,8 @@
 }
 
 .main {
-  margin: 1em;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 /*--------------------------------------------------------------------------------*/
@@ -111,7 +112,7 @@
   top: auto;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1023px) {
   #forkongithub {
     display: none;
   }
