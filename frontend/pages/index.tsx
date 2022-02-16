@@ -1,4 +1,4 @@
-import { default as AceEditor } from "../components/AceEditorWrapper";
+import Editors from "../components/Editors";
 import styles from "../styles/Home.module.css";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -37,22 +37,7 @@ const Home: NextPage = () => {
             # dummy
           </button>
         </div>
-        <div className={styles.editors}>
-          <div className={styles.editor}>
-            <div className={styles.header}>Source</div>
-            <AceEditor className={styles.ace} name="src" />
-          </div>
-          <div className={`${styles.editor} ${styles.editorRight}`}>
-            <div className={styles.header}>Test</div>
-            <AceEditor className={styles.ace} name="test" />
-          </div>
-        </div>
-        <div className={styles.editors}>
-          <div className={`${styles.editor} ${styles.editorConsole}`}>
-            <div className={styles.header}>Console</div>
-            <AceEditor className={styles.ace} name="console" readOnly={true} />
-          </div>
-        </div>
+        <Editors />
       </main>
     </div>
   );
