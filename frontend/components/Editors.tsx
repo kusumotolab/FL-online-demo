@@ -1,5 +1,5 @@
 import styles from "../styles/Editors.module.css";
-import { default as AceEditor } from "./AceEditorWrapper";
+import Editor from "./Editor";
 import { Ace } from "ace-builds";
 import { useCallback } from "react";
 
@@ -18,22 +18,9 @@ function Editors() {
 
   return (
     <div className={styles.editors}>
-      <div className={styles.editor}>
-        <div className={styles.header}>Source</div>
-        <AceEditor className={styles.ace} name="src" onLoad={loadDefaultSrc("default-src.java")} />
-      </div>
-      <div className={`${styles.editor} ${styles.editorRight}`}>
-        <div className={styles.header}>Test</div>
-        <AceEditor
-          className={styles.ace}
-          name="test"
-          onLoad={loadDefaultSrc("default-test.java")}
-        />
-      </div>
-      <div className={`${styles.editor} ${styles.editorConsole}`}>
-        <div className={styles.header}>Console</div>
-        <AceEditor className={styles.ace} name="console" readOnly={true} />
-      </div>
+      <Editor headerText="Source" onLoad={loadDefaultSrc("default-src.java")} name="src" />
+      <Editor headerText="Test" onLoad={loadDefaultSrc("default-test.java")} name="test" />
+      <Editor className={styles.editorConsole} headerText="Console" name="console" readOnly />
     </div>
   );
 }
