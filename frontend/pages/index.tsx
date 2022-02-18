@@ -4,9 +4,13 @@ import styles from "../styles/Home.module.css";
 import { Ace } from "ace-builds";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 const Home: NextPage = () => {
+  const [srcEditor, setSrcEditor] = useState<Ace.Editor>();
+  const [testEditor, setTestEditor] = useState<Ace.Editor>();
+  const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
+
   const loadDefaultSrc = useCallback((uri: RequestInfo): ((editor: Ace.Editor) => void) => {
     return (editor: Ace.Editor) => {
       fetch(uri)
@@ -17,6 +21,10 @@ const Home: NextPage = () => {
           editor.getSession().getUndoManager().reset();
         });
     };
+  }, []);
+
+  const onClickFL = useCallback(() => {
+    console.log("clicked FL");
   }, []);
 
   return (
@@ -38,9 +46,11 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div id={styles.ctrl}>
-          <Button className={styles.btn}>Repair</Button>
           <Button className={styles.btn} disabled={true}>
-            # dummy
+            Repair
+          </Button>
+          <Button className={styles.btn} onClick={onClickFL}>
+            FL
           </Button>
           <Button className={styles.btn} disabled={true}>
             # dummy
@@ -48,10 +58,32 @@ const Home: NextPage = () => {
         </div>
 
         <div className={styles.editors}>
-          <Editor headerText="Source" onLoad={loadDefaultSrc("default-src.java")} name="src" />
-          <Editor headerText="Test" onLoad={loadDefaultSrc("default-test.java")} name="test" />
+          <Editor
+            headerText="Source"
+            onLoad={(editor) => {
+              console.log("loaded ");
+              console.log(editor);
+              setSrcEditor(editor);
+              loadDefaultSrc("default-src.java")(editor);
+            }}
+            name="src"
+          />
+          <Editor
+            headerText="Test"
+            onLoad={(editor) => {
+              setTestEditor(editor);
+              loadDefaultSrc("default-test.java")(editor);
+            }}
+            name="test"
+          />
         </div>
-        <Editor className={styles.editorConsole} headerText="Console" name="console" readOnly />
+        <Editor
+          className={styles.editorConsole}
+          headerText="Console"
+          onLoad={(editor) => setConsoleEditor(editor)}
+          name="console"
+          readOnly
+        />
       </main>
     </div>
   );
