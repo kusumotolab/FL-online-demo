@@ -1,5 +1,6 @@
 import Button from "../components/Button";
 import Editor from "../components/Editor";
+import { useKGenProg } from "../hooks/useKGenProg";
 import styles from "../styles/Home.module.css";
 import { Ace } from "ace-builds";
 import type { NextPage } from "next";
@@ -10,6 +11,13 @@ const Home: NextPage = () => {
   const [srcEditor, setSrcEditor] = useState<Ace.Editor>();
   const [testEditor, setTestEditor] = useState<Ace.Editor>();
   const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
+
+  const [isRunning, setIsRunning] = useState(false);
+
+  const [kgpConsoleHistory, runKgp] = useKGenProg({
+    onStart: () => setIsRunning(true),
+    onFinish: () => setIsRunning(false),
+  });
 
   const loadDefaultSrc = useCallback((uri: RequestInfo): ((editor: Ace.Editor) => void) => {
     return (editor: Ace.Editor) => {
@@ -46,7 +54,11 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div id={styles.ctrl}>
-          <Button className={styles.btn} disabled={true}>
+          <Button
+            className={styles.btn}
+            onClick={() => runKgp(srcEditor!.getValue(), testEditor!.getValue())}
+            disabled={isRunning}
+          >
             Repair
           </Button>
           <Button className={styles.btn} onClick={onClickFL}>
@@ -61,8 +73,6 @@ const Home: NextPage = () => {
           <Editor
             headerText="Source"
             onLoad={(editor) => {
-              console.log("loaded ");
-              console.log(editor);
               setSrcEditor(editor);
               loadDefaultSrc("default-src.java")(editor);
             }}
@@ -83,6 +93,19 @@ const Home: NextPage = () => {
           onLoad={(editor) => setConsoleEditor(editor)}
           name="console"
           readOnly
+          value={kgpConsoleHistory
+            .filter((message) => message && message.data)
+            .map((message) => JSON.parse(message.data))
+            .filter((json) => json && json.stdout)
+            .map((json) => json.stdout as string)
+            .join()}
+          onInput={() => {
+            if (typeof consoleEditor !== "undefined") {
+              const lastLineNumber = consoleEditor.getSession().getLength();
+              const lastColumnNumber = consoleEditor.getSession().getLine(lastLineNumber).length;
+              consoleEditor.gotoLine(lastLineNumber, lastColumnNumber, false);
+            }
+          }}
         />
       </main>
     </div>
