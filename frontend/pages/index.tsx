@@ -13,6 +13,7 @@ const Home: NextPage = () => {
   const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
 
   const [isRunning, setIsRunning] = useState(false);
+  const [ctrl, setCtrl] = useState<"repair" | "fl" | null>(null);
 
   const [kgpConsoleHistory, runKgp] = useKGenProg({
     onStart: () => setIsRunning(true),
@@ -31,8 +32,46 @@ const Home: NextPage = () => {
     };
   }, []);
 
+  const resultElement = useCallback(() => {
+    switch (ctrl) {
+      case "repair":
+        return (
+          <Editor
+            className={styles.editorConsole}
+            headerText="Console"
+            onLoad={(editor) => setConsoleEditor(editor)}
+            name="console"
+            readOnly
+            value={kgpConsoleHistory
+              .filter((message) => message && message.data)
+              .map((message) => JSON.parse(message.data))
+              .filter((json) => json && json.stdout)
+              .map((json) => json.stdout as string)
+              .join()}
+            onInput={() => {
+              if (typeof consoleEditor !== "undefined") {
+                const lastLineNumber = consoleEditor.getSession().getLength();
+                const lastColumnNumber = consoleEditor.getSession().getLine(lastLineNumber).length;
+                consoleEditor.gotoLine(lastLineNumber, lastColumnNumber, false);
+              }
+            }}
+          />
+        );
+      case "fl":
+        return <></>;
+      default:
+        return <></>;
+    }
+  }, [ctrl, kgpConsoleHistory]);
+
+  const onClickRepair = useCallback(() => {
+    runKgp(srcEditor!.getValue(), testEditor!.getValue());
+    setCtrl("repair");
+  }, [srcEditor, testEditor]);
+
   const onClickFL = useCallback(() => {
     console.log("clicked FL");
+    setCtrl("fl");
   }, []);
 
   return (
@@ -54,14 +93,10 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div id={styles.ctrl}>
-          <Button
-            className={styles.btn}
-            onClick={() => runKgp(srcEditor!.getValue(), testEditor!.getValue())}
-            disabled={isRunning}
-          >
+          <Button className={styles.btn} onClick={onClickRepair} disabled={isRunning}>
             Repair
           </Button>
-          <Button className={styles.btn} onClick={onClickFL}>
+          <Button className={styles.btn} onClick={onClickFL} disabled={isRunning}>
             FL
           </Button>
           <Button className={styles.btn} disabled={true}>
@@ -87,26 +122,8 @@ const Home: NextPage = () => {
             name="test"
           />
         </div>
-        <Editor
-          className={styles.editorConsole}
-          headerText="Console"
-          onLoad={(editor) => setConsoleEditor(editor)}
-          name="console"
-          readOnly
-          value={kgpConsoleHistory
-            .filter((message) => message && message.data)
-            .map((message) => JSON.parse(message.data))
-            .filter((json) => json && json.stdout)
-            .map((json) => json.stdout as string)
-            .join()}
-          onInput={() => {
-            if (typeof consoleEditor !== "undefined") {
-              const lastLineNumber = consoleEditor.getSession().getLength();
-              const lastColumnNumber = consoleEditor.getSession().getLine(lastLineNumber).length;
-              consoleEditor.gotoLine(lastLineNumber, lastColumnNumber, false);
-            }
-          }}
-        />
+
+        {resultElement()}
       </main>
     </div>
   );
