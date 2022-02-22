@@ -1,28 +1,15 @@
+import { useFL } from "../hooks/useFL";
 import styles from "../styles/FL.module.css";
-import checkFetchError from "../util/checkFetchError";
 import Button from "./Button";
 import Editor from "./Editor";
 import { Ace } from "ace-builds";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
-import useSWRImmutable from "swr/immutable";
 
 const clamp = (num: number, low: number, high: number) => Math.min(Math.max(low, num), high);
 
-const fetcher = (url: RequestInfo, src: string, test: string) =>
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ src: src, test: test }),
-  })
-    .then(checkFetchError)
-    .then((res) => res)
-    .catch((err) => console.error(err));
-
 function FL({ src, test, ...other }: { src: string; test: string } & IAceEditorProps) {
-  const { data, error } = useSWRImmutable(["/api/fl/all", src, test], fetcher);
+  const { flResult, error, isLoading } = useFL(src, test);
 
   const [editor, setEditor] = useState<Ace.Editor>();
   const [selectedFormula, setSelectedFormula] = useState("Ochiai");
@@ -33,15 +20,15 @@ function FL({ src, test, ...other }: { src: string; test: string } & IAceEditorP
   }, []);
 
   useEffect(() => {
-    if (!data) return;
+    if (isLoading) return;
     if (typeof editor === "undefined") return;
 
-    if (!(selectedFormula in data)) return;
+    if (!(selectedFormula in flResult)) return;
 
     const markerIds = new Set<number>();
 
     for (const [line, _suspiciousness] of Object.entries(
-      data[selectedFormula]["suspiciousnesses"],
+      flResult[selectedFormula]["suspiciousnesses"],
     )) {
       const lineNumber = Number(line);
       const className = `susp-line-${lineNumber}`;
@@ -70,7 +57,7 @@ function FL({ src, test, ...other }: { src: string; test: string } & IAceEditorP
       styleElementRef.current.textContent = "";
       markerIds.forEach((id) => editor.session.removeMarker(id));
     };
-  }, [selectedFormula, editor, data]);
+  }, [selectedFormula, editor, flResult]);
 
   const onClick = useCallback(
     (formula: string) => {
@@ -80,12 +67,12 @@ function FL({ src, test, ...other }: { src: string; test: string } & IAceEditorP
   );
 
   if (error) return <div>Error!</div>;
-  if (!data) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div>
       <div className={styles.formulas}>
-        {Object.keys(data).map((formula) => (
+        {Object.keys(flResult).map((formula) => (
           <Button className={styles.btn} key={`${formula}-btn`} onClick={() => onClick(formula)}>
             {formula}
           </Button>
