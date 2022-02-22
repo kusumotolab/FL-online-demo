@@ -2,22 +2,13 @@ import checkFetchError from "../util/checkFetchError";
 import { useCallback, useEffect, useState } from "react";
 import useWebSocket from "react-use-websocket";
 
-const useKGenProg = ({
-  onStart,
-  onFinish,
-}: {
-  onStart?: (event: Event) => void;
-  onFinish?: (event: CloseEvent) => void;
-}) => {
+const useKGenProg = ({ onFinish }: { onFinish?: (event: CloseEvent) => void }) => {
   const defaultMessageHistory: MessageEvent[] = [];
 
   const [socketUrl, setSocketUrl] = useState<string | null>(null);
   const [messageHistory, setMessageHistory] = useState(defaultMessageHistory);
   const { lastMessage } = useWebSocket(socketUrl, {
-    onOpen: (event) => {
-      setMessageHistory(defaultMessageHistory);
-      if (typeof onStart !== "undefined") onStart(event);
-    },
+    onOpen: () => setMessageHistory(defaultMessageHistory),
     onClose: onFinish,
   });
 

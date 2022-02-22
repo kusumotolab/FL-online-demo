@@ -17,7 +17,6 @@ const Home: NextPage = () => {
   const [ctrl, setCtrl] = useState<"repair" | "fl" | null>(null);
 
   const [kgpConsoleHistory, runKgp] = useKGenProg({
-    onStart: () => setIsRunning(true),
     onFinish: () => setIsRunning(false),
   });
 
@@ -76,6 +75,7 @@ const Home: NextPage = () => {
   const onClickRepair = useCallback(() => {
     runKgp(srcEditor!.getValue(), testEditor!.getValue());
     setCtrl("repair");
+    setIsRunning(true);
   }, [srcEditor, testEditor]);
 
   const onClickFL = useCallback(() => {
