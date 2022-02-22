@@ -8,7 +8,12 @@ import { IAceEditorProps } from "react-ace";
 
 const clamp = (num: number, low: number, high: number) => Math.min(Math.max(low, num), high);
 
-function FL({ src, test, ...other }: { src: string; test: string } & IAceEditorProps) {
+function FL({
+  src,
+  test,
+  onFinish,
+  ...other
+}: { src: string; test: string; onFinish?: () => void } & IAceEditorProps) {
   const { flResult, error, isLoading } = useFL(src, test);
 
   const [editor, setEditor] = useState<Ace.Editor>();
@@ -18,6 +23,10 @@ function FL({ src, test, ...other }: { src: string; test: string } & IAceEditorP
   useEffect(() => {
     document.getElementsByTagName("head").item(0)!.appendChild(styleElementRef.current);
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && typeof onFinish !== "undefined") onFinish();
+  }, [isLoading, onFinish]);
 
   useEffect(() => {
     if (isLoading) return;

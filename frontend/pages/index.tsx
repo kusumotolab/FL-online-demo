@@ -61,7 +61,13 @@ const Home: NextPage = () => {
       case "fl":
         if (typeof srcEditor === "undefined") return <></>;
         if (typeof testEditor === "undefined") return <></>;
-        return <FL src={srcEditor.getValue()} test={testEditor.getValue()} />;
+        return (
+          <FL
+            src={srcEditor.getValue()}
+            test={testEditor.getValue()}
+            onFinish={() => setIsRunning(false)}
+          />
+        );
       default:
         return <></>;
     }
@@ -74,6 +80,7 @@ const Home: NextPage = () => {
 
   const onClickFL = useCallback(() => {
     setCtrl("fl");
+    setIsRunning(true);
   }, []);
 
   return (
