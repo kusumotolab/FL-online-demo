@@ -30,7 +30,7 @@ const useKGenProg = ({
   const assignRun = useCallback((src: string, test: string) => {
     const data = { src: src, test: test };
 
-    fetch("./api/proxy/api/submission", {
+    fetch("./api/kdemo/submission", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
