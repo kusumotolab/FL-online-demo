@@ -70,7 +70,6 @@ const Home: NextPage = () => {
   }, [srcEditor, testEditor]);
 
   const onClickFL = useCallback(() => {
-    console.log("clicked FL");
     setCtrl("fl");
   }, []);
 
