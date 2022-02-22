@@ -7,15 +7,15 @@ import jp.kusumotolab.kgenprog.fl.Suspiciousness;
 
 public class FlResult {
 
-  private final Map<Integer, Double> susp;
+  private final Map<Integer, Double> suspiciousnesses;
 
   public FlResult(List<Suspiciousness> ss) {
-    susp = ss.stream()
+    suspiciousnesses = ss.stream()
         .collect(Collectors.toMap(e -> e.getLocation()
             .inferLineNumbers().start, Suspiciousness::getValue)); //todo 情報落ち
   }
 
-  public Map<Integer, Double> getSusp() {
-    return susp;
+  public Map<Integer, Double> getSuspiciousnesses() {
+    return suspiciousnesses;
   }
 }
