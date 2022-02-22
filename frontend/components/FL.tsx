@@ -104,12 +104,13 @@ function FL({ src, test, ...other }: { src: string; test: string } & IAceEditorP
     <div>
       <div className={styles.formulas}>
         {Object.keys(data).map((formula) => (
-          <Button key={`${formula}-btn`} onClick={() => onClick(formula)}>
+          <Button className={styles.btn} key={`${formula}-btn`} onClick={() => onClick(formula)}>
             {formula}
           </Button>
         ))}
       </div>
       <Editor
+        className={styles.flEditor}
         headerText="FL"
         name="fl"
         readOnly
