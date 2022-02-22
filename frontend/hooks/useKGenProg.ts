@@ -1,3 +1,4 @@
+import checkFetchError from "../util/checkFetchError";
 import { useCallback, useEffect, useState } from "react";
 import useWebSocket from "react-use-websocket";
 
@@ -25,14 +26,6 @@ const useKGenProg = ({
       setMessageHistory((prev) => prev.concat(lastMessage));
     }
   }, [lastMessage, setMessageHistory]);
-
-  const checkFetchError = useCallback((resp) => {
-    console.log(resp);
-    if (resp.status >= 200 && resp.status <= 299) {
-      return resp.json();
-    }
-    throw Error(resp);
-  }, []);
 
   const assignRun = useCallback((src: string, test: string) => {
     const data = { src: src, test: test };
