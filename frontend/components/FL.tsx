@@ -22,25 +22,7 @@ const fetcher = (url: RequestInfo, src: string, test: string) =>
     .catch((err) => console.error(err));
 
 function FL({ src, test, ...other }: { src: string; test: string } & IAceEditorProps) {
-  // const { data, error } = useSWRImmutable(["/api/fl/all", src, test], fetcher);
-  const data: any = {
-    DStar: {
-      suspiciousnesses: { "1": 0.33333333333333331, "2": "Infinity", "3": 0.33333333333333331 },
-    },
-    Jaccard: { suspiciousnesses: { "1": 0.25, "2": 1.0, "3": 0.25 } },
-    Zolter: { suspiciousnesses: { "1": 0.25, "2": 1.0, "3": 0.25 } },
-    Ample: {
-      suspiciousnesses: {
-        "1": 1.0,
-        "2": 1.0,
-        "3": 0.66666666666666663,
-        "4": 0.33333333333333331,
-      },
-    },
-    Ochiai: { suspiciousnesses: { "1": 0.5, "2": 1.0, "3": 0.5 } },
-    Tarantula: { suspiciousnesses: { "1": 0.5, "2": 1.0, "3": 0.5 } },
-  };
-  let error = undefined;
+  const { data, error } = useSWRImmutable(["/api/fl/all", src, test], fetcher);
 
   const [editor, setEditor] = useState<Ace.Editor>();
   const [selectedFormula, setSelectedFormula] = useState("Ochiai");
