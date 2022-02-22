@@ -23,7 +23,7 @@ class HealthControllerTest {
 
   @Test
   void test() throws Exception {
-    mockMvc.perform(get("/health"))
+    mockMvc.perform(get("/api/health"))
         .andExpect(status().isOk())
         .andExpect(content().string(""));
   }

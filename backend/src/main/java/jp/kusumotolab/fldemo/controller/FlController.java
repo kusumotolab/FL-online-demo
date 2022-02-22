@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("fl")
+@RequestMapping("api/fl")
 @Scope("request")
 public class FlController {
 

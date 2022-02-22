@@ -36,7 +36,7 @@ class FlControllerTest {
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/fl/all").content(objectMapper.writeValueAsString(st))
+    mockMvc.perform(post("/api/fl/all").content(objectMapper.writeValueAsString(st))
         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
   }
 
@@ -49,7 +49,7 @@ class FlControllerTest {
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/fl/all").content(objectMapper.writeValueAsString(st))
+    mockMvc.perform(post("/api/fl/all").content(objectMapper.writeValueAsString(st))
         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
   }
 }
