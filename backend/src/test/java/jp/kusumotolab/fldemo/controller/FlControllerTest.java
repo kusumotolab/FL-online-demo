@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FlControllerTest {
+class FlControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -30,20 +30,17 @@ public class FlControllerTest {
 
   @Test
   void testBuildSuccess01() throws Exception {
-    final String src = Files.readString(
-        Paths.get("example/BuildSuccess01/src/example/Foo.java"));
+    final String src = Files.readString(Paths.get("example/BuildSuccess01/src/example/Foo.java"));
     final String test = Files.readString(
         Paths.get("example/BuildSuccess01/src/example/FooTest.java"));
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/fl/all")
-            .content(objectMapper.writeValueAsString(st))
-            .contentType(MediaType.APPLICATION_JSON))
-        .andDo(print())
-        .andExpect(status().isOk());
+    mockMvc.perform(post("/fl/all").content(objectMapper.writeValueAsString(st))
+        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
   }
 
+  @Test
   void testCloseToZero01() throws Exception {
     final String src = Files.readString(
         Paths.get("example/CloseToZero01/src/example/CloseToZero.java"));
@@ -52,10 +49,7 @@ public class FlControllerTest {
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/fl/all")
-            .content(objectMapper.writeValueAsString(st))
-            .contentType(MediaType.APPLICATION_JSON))
-        .andDo(print())
-        .andExpect(status().isOk());
+    mockMvc.perform(post("/fl/all").content(objectMapper.writeValueAsString(st))
+        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
   }
 }
