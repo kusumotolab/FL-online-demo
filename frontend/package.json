@@ -14,7 +14,8 @@
     "react": "17.0.2",
     "react-ace": "^9.5.0",
     "react-dom": "17.0.2",
-    "react-use-websocket": "^3.0.0"
+    "react-use-websocket": "^3.0.0",
+    "swr": "^1.2.2"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",

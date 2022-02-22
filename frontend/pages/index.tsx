@@ -1,5 +1,6 @@
 import Button from "../components/Button";
 import Editor from "../components/Editor";
+import FL from "../components/FL";
 import { useKGenProg } from "../hooks/useKGenProg";
 import styles from "../styles/Home.module.css";
 import { Ace } from "ace-builds";
@@ -58,7 +59,9 @@ const Home: NextPage = () => {
           />
         );
       case "fl":
-        return <></>;
+        if (typeof srcEditor === "undefined") return <></>;
+        if (typeof testEditor === "undefined") return <></>;
+        return <FL src={srcEditor.getValue()} test={testEditor.getValue()} />;
       default:
         return <></>;
     }
