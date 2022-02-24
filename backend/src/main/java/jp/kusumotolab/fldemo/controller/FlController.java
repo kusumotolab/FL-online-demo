@@ -1,8 +1,8 @@
 package jp.kusumotolab.fldemo.controller;
 
 import java.util.Map;
-import jp.kusumotolab.fldemo.common.FlResult;
-import jp.kusumotolab.fldemo.model.SrcAndTests;
+import jp.kusumotolab.fldemo.response.FlResult;
+import jp.kusumotolab.fldemo.request.SrcAndTests;
 import jp.kusumotolab.fldemo.service.KgenprogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
