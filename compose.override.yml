@@ -16,3 +16,13 @@ services:
           npm ci
         }
         npm run dev
+  backend:
+    ports:
+      - 8080:8080
+    volumes:
+      - type: bind
+        source: ./backend/
+        target: /backend/
+    command:
+      - ./gradlew
+      - bootRun

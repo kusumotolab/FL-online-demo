@@ -10,4 +10,5 @@ services:
   backend:
     build:
       context: ./backend/
+    working_dir: /backend/
     image: fl-online-demo-backend
