@@ -13,11 +13,11 @@ const nextConfig = {
     return [
       {
         source: '/api/kdemo/:slug*',
-        destination: process.env.REPAIR_API_HOST + '/api/:slug*', // Matched parameters can be used in the destination
+        destination: process.env.REPAIR_API_ENDPOINT + '/api/:slug*', // Matched parameters can be used in the destination
       },
       {
         source: '/api/fl/:slug*',
-        destination: process.env.FL_API_HOST + '/api/fl/:slug*', // Matched parameters can be used in the destination
+        destination: process.env.FL_API_ENDPOINT + '/api/fl/:slug*', // Matched parameters can be used in the destination
       },
     ]
   }
