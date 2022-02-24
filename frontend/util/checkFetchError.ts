@@ -1,4 +1,4 @@
-const checkFetchError = (resp) => {
+const checkFetchError = (resp: Response) => {
   if (resp.ok) return resp.json();
   throw Promise.reject(resp);
 };
