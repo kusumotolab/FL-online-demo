@@ -40,6 +40,19 @@ class FlControllerTest {
   }
 
   @Test
+  void testBuildFailure01() throws Exception {
+    final String src = Files.readString(
+        Paths.get("example/BuildFailure01/src/example/NonCompilable.java"));
+    final String test = Files.readString(
+        Paths.get("example/BuildSuccess01/src/example/FooTest.java")); //Compilable test
+
+    var st = new SrcAndTests(src, test);
+
+    mockMvc.perform(post("/api/fl/all").content(objectMapper.writeValueAsString(st))
+        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isBadRequest());
+  }
+
+  @Test
   void testBuildSuccess01() throws Exception {
     final String src = Files.readString(Paths.get("example/BuildSuccess01/src/example/Foo.java"));
     final String test = Files.readString(

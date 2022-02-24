@@ -17,7 +17,9 @@ import jp.kusumotolab.kgenprog.ga.variant.Variant;
 import jp.kusumotolab.kgenprog.ga.variant.VariantStore;
 import jp.kusumotolab.kgenprog.project.jdt.JDTASTConstruction;
 import jp.kusumotolab.kgenprog.project.test.LocalTestExecutor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class KgenprogService {
@@ -28,6 +30,10 @@ public class KgenprogService {
     project = Project.build(st);
 
     Variant initialVariant = createInitialVariant();
+
+    if (!initialVariant.isBuildSucceeded()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
 
     final Map<String, FlResult> ret = new HashMap<>();
     for (final var e : FlKind.values()) {
