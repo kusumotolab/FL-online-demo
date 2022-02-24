@@ -58,12 +58,12 @@ public record Project(String src, String srcFQN, String srcClassName, String src
 
   public static String inferClassName(final String src) {
     final String s = extractByRegex(src, ".*class\\s+([^{\\s]+)\\s*\\{");
-    return verifyOrThrow(s);
+    return verifyOrThrow(s, "Can not infer class name");
   }
 
   public static String inferPackageName(final String src) {
     final String s = extractByRegex(src, "^\\s*package\\s+(.+);");
-    return verifyOrThrow(s);
+    return verifyOrThrow(s, "Can not infer package name");
   }
 
   public static String extractByRegex(final String target, final String regex) {
@@ -72,9 +72,9 @@ public record Project(String src, String srcFQN, String srcClassName, String src
     return m.find() ? m.group(1) : "";
   }
 
-  private static String verifyOrThrow(final String s) {
+  private static String verifyOrThrow(final String s, final String reason) {
     if (s.isBlank()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
     }
 
     return s;

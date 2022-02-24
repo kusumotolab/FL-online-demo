@@ -32,7 +32,7 @@ public class KgenprogService {
     Variant initialVariant = createInitialVariant();
 
     if (!initialVariant.isBuildSucceeded()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Build failed");
     }
 
     final Map<String, FlResult> ret = new HashMap<>();
