@@ -5,8 +5,8 @@ services:
       context: ./frontend/
     working_dir: /frontend/
     image: fl-online-demo-frontend
-    env_file:
-      - ./frontend/api_hosts.env
+    ports:
+      - 3000:3000
   backend:
     build:
       context: ./backend/

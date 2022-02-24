@@ -44,8 +44,10 @@ function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEdit
   const switchCursorDisplay = useCallback(
     (editor: Ace.Editor) => {
       if (readOnly) {
+        // @ts-ignore
         editor.renderer.$cursorLayer.element.style.display = "none";
       } else {
+        // @ts-ignore
         editor.renderer.$cursorLayer.element.style.display = "true";
       }
     },
