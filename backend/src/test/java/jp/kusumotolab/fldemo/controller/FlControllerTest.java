@@ -29,6 +29,17 @@ class FlControllerTest {
   private ObjectMapper objectMapper;
 
   @Test
+  void testEmpty() throws Exception {
+    final String src = "";
+    final String test = "";
+
+    var st = new SrcAndTests(src, test);
+
+    mockMvc.perform(post("/api/fl/all").content(objectMapper.writeValueAsString(st))
+        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isBadRequest());
+  }
+
+  @Test
   void testBuildSuccess01() throws Exception {
     final String src = Files.readString(Paths.get("example/BuildSuccess01/src/example/Foo.java"));
     final String test = Files.readString(
@@ -52,4 +63,5 @@ class FlControllerTest {
     mockMvc.perform(post("/api/fl/all").content(objectMapper.writeValueAsString(st))
         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
   }
+
 }
