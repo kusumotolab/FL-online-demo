@@ -8,13 +8,12 @@ const fetcher = (url: RequestInfo, src: string, test: string) =>
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ src: src, test: test }),
-  })
-    .then(checkFetchError)
-    .then((res) => res)
-    .catch((err) => console.error(err));
+  }).then(checkFetchError);
 
 const useFL = (src: string, test: string) => {
-  const { data, error } = useSWRImmutable(["/api/fl/all", src, test], fetcher);
+  const { data, error } = useSWRImmutable(["/api/fl/all", src, test], fetcher, {
+    shouldRetryOnError: false,
+  });
 
   return {
     flResult: data,

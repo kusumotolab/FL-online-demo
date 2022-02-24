@@ -1,8 +1,6 @@
 const checkFetchError = (resp) => {
-  if (resp.status >= 200 && resp.status <= 299) {
-    return resp.json();
-  }
-  throw Error(resp);
+  if (resp.ok) return resp.json();
+  throw Promise.reject(resp);
 };
 
 export default checkFetchError;
