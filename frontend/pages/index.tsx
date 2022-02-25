@@ -97,7 +97,7 @@ const Home: NextPage = () => {
         </a>
       </header>
       <span id={styles.forkongithub}>
-        <a href="https://github.com/kusumotolab/kGenProg/">Fork me on GitHub</a>
+        <a href="https://github.com/kusumotolab/FL-online-demo/">Fork me on GitHub</a>
       </span>
 
       <main className={styles.main}>
