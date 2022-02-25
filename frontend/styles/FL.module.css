@@ -1,13 +1,9 @@
 .formulas {
-  margin-bottom: 1rem;
-}
-
-.formulas .btn {
-  margin-right: 4px;
-}
-
-.formulas .btn:last-of-type {
-  margin-right: 0;
+  margin: 1rem auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  column-gap: 0.5rem;
+  row-gap: 0.5rem;
 }
 
 .flEditor {
