@@ -53,16 +53,10 @@
 
 #ctrl {
   margin: 1em 0;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-#ctrl .btn {
-  margin-right: 4px;
-}
-
-#ctrl .btn:last-of-type {
-  margin-right: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  column-gap: 0.5rem;
+  row-gap: 0.5rem;
 }
 
 @media (max-width: 959px) {
