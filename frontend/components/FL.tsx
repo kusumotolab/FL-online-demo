@@ -6,8 +6,6 @@ import { Ace } from "ace-builds";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
-const clamp = (num: number, low: number, high: number) => Math.min(Math.max(low, num), high);
-
 function FL({
   src,
   test,
@@ -56,7 +54,7 @@ function FL({
         `
           .${className} {
             position: absolute;
-            background-color: rgba(225, 95, 95, ${clamp(suspiciousness * 0.5, 0, 1)});
+            background-color: rgba(225, 95, 95, ${Math.tanh(suspiciousness) * 0.9});
             z-index:20;
           }
         `;
