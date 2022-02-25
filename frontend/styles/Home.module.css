@@ -65,6 +65,12 @@
   margin-right: 0;
 }
 
+@media (max-width: 959px) {
+  .editors {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
 /*--------------------------------------------------------------------------------*/
 /* https://codepo8.github.io/css-fork-on-github-ribbon/ */
 #forkongithub {
