@@ -77,7 +77,7 @@ function FL({
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div>
+    <>
       <div className={styles.formulas}>
         {Object.keys(flResult).map((formula) => (
           <Button
@@ -90,16 +90,36 @@ function FL({
           </Button>
         ))}
       </div>
-      <Editor
-        className={styles.flEditor}
-        headerText="FL"
-        name="fl"
-        readOnly
-        value={src}
-        onLoad={(editor) => setEditor(editor)}
-        {...other}
-      />
-    </div>
+      <div className={styles.container}>
+        <Editor
+          className={styles.flEditor}
+          headerText="FL"
+          name="fl"
+          readOnly
+          value={src}
+          onLoad={(editor) => setEditor(editor)}
+          {...other}
+        />
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>line</th>
+              <th>suspiciousness</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(flResult[selectedFormula]["suspiciousnesses"]).flatMap(
+              ([line, suspiciousness]) => (
+                <tr key={line}>
+                  <td>{line}</td>
+                  <td>{Number(suspiciousness).toFixed(3)}</td>
+                </tr>
+              ),
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 
