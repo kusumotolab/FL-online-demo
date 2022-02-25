@@ -82,7 +82,12 @@ function FL({
     <div>
       <div className={styles.formulas}>
         {Object.keys(flResult).map((formula) => (
-          <Button className={styles.btn} key={`${formula}-btn`} onClick={() => onClick(formula)}>
+          <Button
+            className={styles.btn}
+            key={`${formula}-btn`}
+            onClick={() => onClick(formula)}
+            on={selectedFormula === formula}
+          >
             {formula}
           </Button>
         ))}

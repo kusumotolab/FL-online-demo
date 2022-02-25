@@ -32,3 +32,7 @@
 .btn:disabled {
   background-color: #7f8596;
 }
+
+.on {
+  background-color: #34af48;
+}

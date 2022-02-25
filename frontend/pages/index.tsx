@@ -102,10 +102,20 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div id={styles.ctrl}>
-          <Button className={styles.btn} onClick={onClickRepair} disabled={isRunning}>
+          <Button
+            className={styles.btn}
+            onClick={onClickRepair}
+            disabled={isRunning}
+            on={ctrl === "repair"}
+          >
             Repair
           </Button>
-          <Button className={styles.btn} onClick={onClickFL} disabled={isRunning}>
+          <Button
+            className={styles.btn}
+            onClick={onClickFL}
+            disabled={isRunning}
+            on={ctrl === "fl"}
+          >
             FL
           </Button>
           <Button className={styles.btn} disabled={true}>
