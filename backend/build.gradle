@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation files('src/main/resources/kGenProg/kGenProg.jar')
+    implementation files('lib/kGenProg.jar')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
