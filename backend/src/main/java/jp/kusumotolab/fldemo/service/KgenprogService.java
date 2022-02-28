@@ -17,6 +17,8 @@ import jp.kusumotolab.kgenprog.ga.variant.Variant;
 import jp.kusumotolab.kgenprog.ga.variant.VariantStore;
 import jp.kusumotolab.kgenprog.project.jdt.JDTASTConstruction;
 import jp.kusumotolab.kgenprog.project.test.LocalTestExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,14 +26,19 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class KgenprogService {
 
+  private static final Logger logger = LoggerFactory.getLogger(KgenprogService.class);
   private Project project;
 
   public Map<String, FlResult> execFl(final SrcAndTests st) {
     project = Project.build(st);
+    logger.info("Built project " + project);
 
-    Variant initialVariant = createInitialVariant();
+    final Variant initialVariant = createInitialVariant();
+    logger.info(
+        project.projectDir() + " test results\n" + initialVariant.getTestResults().toString());
 
     if (!initialVariant.isBuildSucceeded()) {
+      logger.warn(project.projectDir().toString() + "built failed");
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Build failed");
     }
 
