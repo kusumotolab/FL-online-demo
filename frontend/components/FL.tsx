@@ -1,7 +1,7 @@
 import { useFL } from "../hooks/useFL";
 import styles from "../styles/FL.module.css";
-import Button from "./Button";
 import Editor from "./Editor";
+import { Button, ButtonGroup } from "@mui/material";
 import { Ace } from "ace-builds";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
@@ -9,9 +9,10 @@ import { IAceEditorProps } from "react-ace";
 function FL({
   src,
   test,
-  onFinish,
+  onSuccess,
+  onError,
   ...other
-}: { src: string; test: string; onFinish?: () => void } & IAceEditorProps) {
+}: { src: string; test: string; onSuccess?: () => void; onError?: () => void } & IAceEditorProps) {
   const { flResult, error, isLoading } = useFL(src, test);
 
   const [editor, setEditor] = useState<Ace.Editor>();
@@ -23,8 +24,9 @@ function FL({
   }, []);
 
   useEffect(() => {
-    if (!isLoading && typeof onFinish !== "undefined") onFinish();
-  }, [isLoading, onFinish]);
+    if (!isLoading && flResult && typeof onSuccess !== "undefined") onSuccess();
+    if (!isLoading && error && typeof onError !== "undefined") onError();
+  }, [flResult, error, isLoading, onSuccess, onError]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -81,10 +83,9 @@ function FL({
       <div className={styles.formulas}>
         {Object.keys(flResult).map((formula) => (
           <Button
-            className={styles.btn}
             key={`${formula}-btn`}
             onClick={() => onClick(formula)}
-            on={selectedFormula === formula}
+            variant={selectedFormula === formula ? "contained" : "outlined"}
           >
             {formula}
           </Button>

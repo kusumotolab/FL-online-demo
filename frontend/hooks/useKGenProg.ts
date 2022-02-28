@@ -2,14 +2,15 @@ import checkFetchError from "../util/checkFetchError";
 import { useCallback, useEffect, useState } from "react";
 import useWebSocket from "react-use-websocket";
 
-const useKGenProg = ({ onFinish }: { onFinish?: () => void }) => {
+const useKGenProg = ({ onSuccess, onError }: { onSuccess?: () => void; onError?: () => void }) => {
   const defaultMessageHistory: MessageEvent[] = [];
 
   const [socketUrl, setSocketUrl] = useState<string | null>(null);
   const [messageHistory, setMessageHistory] = useState(defaultMessageHistory);
   const { lastMessage } = useWebSocket(socketUrl, {
     onOpen: () => setMessageHistory(defaultMessageHistory),
-    onClose: onFinish,
+    onClose: onSuccess,
+    onError: onError,
   });
 
   useEffect(() => {
@@ -32,7 +33,7 @@ const useKGenProg = ({ onFinish }: { onFinish?: () => void }) => {
       .then((text) => setSocketUrl("ws://tyr.ics.es.osaka-u.ac.jp/" + text.key))
       .catch((err) => {
         console.error(err);
-        if (typeof onFinish !== "undefined") onFinish();
+        if (typeof onError !== "undefined") onError();
       });
   }, []);
 

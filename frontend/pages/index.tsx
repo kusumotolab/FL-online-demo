@@ -1,8 +1,13 @@
-import Button from "../components/Button";
 import Editor from "../components/Editor";
 import FL from "../components/FL";
 import { useKGenProg } from "../hooks/useKGenProg";
 import styles from "../styles/Home.module.css";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
+import BugReportIcon from "@mui/icons-material/BugReport";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import { Ace } from "ace-builds";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -14,10 +19,21 @@ const Home: NextPage = () => {
   const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
 
   const [isRunning, setIsRunning] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [ctrl, setCtrl] = useState<"repair" | "fl" | null>(null);
 
   const [kgpConsoleHistory, runKgp] = useKGenProg({
-    onFinish: () => setIsRunning(false),
+    onSuccess: () => {
+      setIsRunning(false);
+      setIsSuccess(true);
+      setIsError(false);
+    },
+    onError: () => {
+      setIsRunning(false);
+      setIsSuccess(false);
+      setIsError(true);
+    },
   });
 
   const loadDefaultSrc = useCallback((uri: RequestInfo): ((editor: Ace.Editor) => void) => {
@@ -64,7 +80,16 @@ const Home: NextPage = () => {
           <FL
             src={srcEditor.getValue()}
             test={testEditor.getValue()}
-            onFinish={() => setIsRunning(false)}
+            onSuccess={() => {
+              setIsRunning(false);
+              setIsSuccess(true);
+              setIsError(false);
+            }}
+            onError={() => {
+              setIsRunning(false);
+              setIsSuccess(false);
+              setIsError(true);
+            }}
           />
         );
       default:
@@ -82,6 +107,9 @@ const Home: NextPage = () => {
     setCtrl("fl");
     setIsRunning(true);
   }, []);
+
+  const isRepairLoading = ctrl === "repair" && isRunning;
+  const isFLLoading = ctrl === "fl" && isRunning;
 
   return (
     <div className={styles.container}>
@@ -103,23 +131,29 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <div id={styles.ctrl}>
           <Button
-            className={styles.btn}
             onClick={onClickRepair}
+            startIcon={isRepairLoading ? <CircularProgress color="inherit" /> : <AutoFixHighIcon />}
+            color={
+              ctrl !== "repair" ? "primary" : isSuccess ? "success" : isError ? "error" : "primary"
+            }
+            variant={ctrl === "repair" ? "contained" : "outlined"}
             disabled={isRunning}
-            on={ctrl === "repair"}
           >
             Repair
           </Button>
           <Button
-            className={styles.btn}
             onClick={onClickFL}
+            startIcon={isFLLoading ? <CircularProgress color="inherit" /> : <BugReportIcon />}
+            color={
+              ctrl !== "fl" ? "primary" : isSuccess ? "success" : isError ? "error" : "primary"
+            }
+            variant={ctrl === "fl" ? "contained" : "outlined"}
             disabled={isRunning}
-            on={ctrl === "fl"}
           >
             FL
           </Button>
-          <Button className={styles.btn} disabled={true}>
-            # dummy
+          <Button startIcon={<PlayArrowIcon />} disabled={true}>
+            Test
           </Button>
         </div>
 
