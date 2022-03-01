@@ -1,5 +1,6 @@
 package jp.kusumotolab.fldemo.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 import jp.kusumotolab.fldemo.common.SourceUtil;
@@ -10,10 +11,19 @@ import lombok.Data;
 @Data
 public class TestResultWithCoverage {
 
+  @JsonProperty("testMethod")
   private final String testMethod;
+
+  @JsonProperty("coverages")
   private final List<Coverage> coverages;
+
+  @JsonProperty("executedTestFQN")
   private final String executedTestFQN;
+
+  @JsonProperty("failed")
   private final boolean failed;
+
+  @JsonProperty("failedReason")
   private final String failedReason;
 
   public static TestResultWithCoverage valueOf(final TestResult testResult, final String src) {
