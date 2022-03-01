@@ -1,9 +1,9 @@
 import fetcher from "../util/fetcher";
 import useSWRImmutable from "swr/immutable";
 
-const useFL = (src: string, test: string) => {
+const useTests = (src: string, test: string) => {
   const { data, error } = useSWRImmutable(
-    [new URL(`./api/fl/all`, process.env.NEXT_PUBLIC_FL_API_ENDPOINT).href, src, test],
+    [new URL(`./api/test`, process.env.NEXT_PUBLIC_TEST_API_ENDPOINT).href, src, test],
     fetcher,
     {
       shouldRetryOnError: false,
@@ -11,10 +11,10 @@ const useFL = (src: string, test: string) => {
   );
 
   return {
-    flResult: data,
+    testResults: data,
     error: error,
     isLoading: !error && !data,
   };
 };
 
-export { useFL };
+export { useTests };

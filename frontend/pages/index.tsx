@@ -1,3 +1,4 @@
+import Coverage from "../components/Coverage";
 import Editor from "../components/Editor";
 import FL from "../components/FL";
 import KGenProg from "../components/KGenProg";
@@ -19,7 +20,7 @@ const Home: NextPage = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [ctrl, setCtrl] = useState<"repair" | "fl" | null>(null);
+  const [ctrl, setCtrl] = useState<"repair" | "fl" | "test" | null>(null);
 
   const loadDefaultSrc = useCallback((uri: RequestInfo): ((editor: Ace.Editor) => void) => {
     return (editor: Ace.Editor) => {
@@ -66,6 +67,15 @@ const Home: NextPage = () => {
             onError={onError}
           />
         );
+      case "test":
+        return (
+          <Coverage
+            src={srcEditor.getValue()}
+            test={testEditor.getValue()}
+            onSuccess={onSuccess}
+            onError={onError}
+          />
+        );
       default:
         return <></>;
     }
@@ -78,6 +88,11 @@ const Home: NextPage = () => {
 
   const onClickFL = useCallback(() => {
     setCtrl("fl");
+    setIsRunning(true);
+  }, []);
+
+  const onClickTest = useCallback(() => {
+    setCtrl("test");
     setIsRunning(true);
   }, []);
 
@@ -125,7 +140,15 @@ const Home: NextPage = () => {
           >
             FL
           </Button>
-          <Button startIcon={<PlayArrowIcon />} disabled={true}>
+          <Button
+            onClick={onClickTest}
+            startIcon={isFLLoading ? <CircularProgress color="inherit" /> : <PlayArrowIcon />}
+            color={
+              ctrl !== "test" ? "primary" : isSuccess ? "success" : isError ? "error" : "primary"
+            }
+            variant={ctrl === "test" ? "contained" : "outlined"}
+            disabled={isRunning}
+          >
             Test
           </Button>
         </div>
