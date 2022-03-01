@@ -1,10 +1,12 @@
 package jp.kusumotolab.fldemo.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import jp.kusumotolab.fldemo.common.FlKind;
 import jp.kusumotolab.fldemo.common.Project;
+import jp.kusumotolab.fldemo.data.TestResultWithCoverage;
 import jp.kusumotolab.fldemo.request.SrcAndTests;
 import jp.kusumotolab.fldemo.response.FlResult;
 import jp.kusumotolab.kgenprog.Configuration;
@@ -17,6 +19,7 @@ import jp.kusumotolab.kgenprog.ga.variant.Variant;
 import jp.kusumotolab.kgenprog.ga.variant.VariantStore;
 import jp.kusumotolab.kgenprog.project.jdt.JDTASTConstruction;
 import jp.kusumotolab.kgenprog.project.test.LocalTestExecutor;
+import jp.kusumotolab.kgenprog.project.test.TestResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,17 +33,8 @@ public class KgenprogService {
   private Project project;
 
   public Map<String, FlResult> execFl(final SrcAndTests st) {
-    project = Project.build(st);
-    logger.info("Built project " + project);
-
+    initProject(st);
     final Variant initialVariant = createInitialVariant();
-    logger.info(
-        project.projectDir() + " test results\n" + initialVariant.getTestResults().toString());
-
-    if (!initialVariant.isBuildSucceeded()) {
-      logger.warn(project.projectDir().toString() + "built failed");
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Build failed");
-    }
 
     final Map<String, FlResult> ret = new HashMap<>();
     for (final var e : FlKind.values()) {
@@ -51,6 +45,20 @@ public class KgenprogService {
     return ret;
   }
 
+  public List<TestResultWithCoverage> execTests(final SrcAndTests st) {
+    initProject(st);
+    final Variant initialVariant = createInitialVariant();
+    final TestResults testResults = initialVariant.getTestResults();
+
+    return testResults.getExecutedTestFQNs().stream().map(testResults::getTestResult)
+        .map(e -> TestResultWithCoverage.valueOf(e, project.src())).toList();
+  }
+
+  private void initProject(final SrcAndTests st) {
+    project = Project.build(st);
+    logger.info("Built project " + project);
+  }
+
   private Variant createInitialVariant() {
     final Configuration config = new Builder(project.projectDir(), project.srcPath(),
         project.testPath()).build();
@@ -59,6 +67,16 @@ public class KgenprogService {
         new DefaultCodeValidation(), new LocalTestExecutor(config),
         new DefaultVariantSelection(config.getHeadcount(), new Random(config.getRandomSeed())));
     final VariantStore vs = new VariantStore(config, strategies);
-    return vs.getInitialVariant();
+    final Variant initialVariant = vs.getInitialVariant();
+
+    logger.info(
+        project.projectDir() + " test results\n" + initialVariant.getTestResults().toString());
+
+    if (!initialVariant.isBuildSucceeded()) {
+      logger.warn(project.projectDir().toString() + "built failed");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Build failed");
+    }
+
+    return initialVariant;
   }
 }
