@@ -36,21 +36,38 @@ function FL({
 
     const markerIds = new Set<number>();
 
+    const maxLength = Math.max(
+      ...editor
+        .getSession()
+        .getValue()
+        .split(/\r?\n/)
+        .map((s) => s.length),
+    );
     for (const [line, _suspiciousness] of Object.entries(
       flResult[selectedFormula]["suspiciousnesses"],
     )) {
       const lineNumber = Number(line);
       const className = `susp-line-${lineNumber}`;
+      const suspiciousness = Number(_suspiciousness);
 
       // Range を取るためのワークアラウンド（Next.js で new Range() できるように import する方法が分からなかった）
       const range = editor.getSelectionRange();
       range.setStart(lineNumber - 1, 0);
       range.setEnd(lineNumber - 1, 1);
 
+      const lineLength = editor.session.getLine(lineNumber - 1).length + 1;
+      editor.session.insert(
+        {
+          row: lineNumber - 1,
+          column: lineLength,
+        },
+        `${" ".repeat(maxLength - lineLength + 4)}/* suspiciousness: ${Number(
+          suspiciousness,
+        ).toFixed(3)} */`,
+      );
+
       const markerId = editor.session.addMarker(range, className, "fullLine");
       markerIds.add(markerId);
-
-      const suspiciousness = Number(_suspiciousness);
       styleElementRef.current.textContent =
         styleElementRef.current.textContent +
         `
@@ -91,35 +108,15 @@ function FL({
           </Button>
         ))}
       </div>
-      <div className={styles.container}>
-        <Editor
-          className={styles.flEditor}
-          headerText="FL"
-          name="fl"
-          readOnly
-          value={src}
-          onLoad={(editor) => setEditor(editor)}
-          {...other}
-        />
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>line</th>
-              <th>suspiciousness</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(flResult[selectedFormula]["suspiciousnesses"]).flatMap(
-              ([line, suspiciousness]) => (
-                <tr key={line}>
-                  <td>{line}</td>
-                  <td>{Number(suspiciousness).toFixed(3)}</td>
-                </tr>
-              ),
-            )}
-          </tbody>
-        </table>
-      </div>
+      <Editor
+        className={styles.flEditor}
+        headerText="FL"
+        name="fl"
+        readOnly
+        value={src}
+        onLoad={(editor) => setEditor(editor)}
+        {...other}
+      />
     </>
   );
 }
