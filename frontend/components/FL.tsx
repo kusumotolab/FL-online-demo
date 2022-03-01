@@ -16,7 +16,7 @@ function FL({
   const { flResult, error, isLoading } = useFL(src, test);
 
   const [editor, setEditor] = useState<Ace.Editor>();
-  const [selectedFormula, setSelectedFormula] = useState("Ochiai");
+  const [selectedTechnique, setSelectedTechnique] = useState("Ochiai");
 
   const styleElementRef = useRef(document.createElement("style"));
   useEffect(() => {
@@ -32,7 +32,7 @@ function FL({
     if (isLoading) return;
     if (typeof editor === "undefined") return;
 
-    if (!(selectedFormula in flResult)) return;
+    if (!(selectedTechnique in flResult)) return;
 
     const markerIds = new Set<number>();
 
@@ -44,7 +44,7 @@ function FL({
         .map((s) => s.length),
     );
     for (const [line, _suspiciousness] of Object.entries(
-      flResult[selectedFormula]["suspiciousnesses"],
+      flResult[selectedTechnique]["suspiciousnesses"],
     )) {
       const lineNumber = Number(line);
       const className = `susp-line-${lineNumber}`;
@@ -83,13 +83,13 @@ function FL({
       styleElementRef.current.textContent = "";
       markerIds.forEach((id) => editor.session.removeMarker(id));
     };
-  }, [selectedFormula, editor, flResult]);
+  }, [selectedTechnique, editor, flResult]);
 
   const onClick = useCallback(
-    (formula: string) => {
-      setSelectedFormula(formula);
+    (technique: string) => {
+      setSelectedTechnique(technique);
     },
-    [setSelectedFormula],
+    [setSelectedTechnique],
   );
 
   if (error) return <div>Error!</div>;
@@ -97,14 +97,14 @@ function FL({
 
   return (
     <>
-      <div className={styles.formulas}>
-        {Object.keys(flResult).map((formula) => (
+      <div className={styles.techniques}>
+        {Object.keys(flResult).map((technique) => (
           <Button
-            key={`${formula}-btn`}
-            onClick={() => onClick(formula)}
-            variant={selectedFormula === formula ? "contained" : "outlined"}
+            key={`${technique}-btn`}
+            onClick={() => onClick(technique)}
+            variant={selectedTechnique === technique ? "contained" : "outlined"}
           >
-            {formula}
+            {technique}
           </Button>
         ))}
       </div>
