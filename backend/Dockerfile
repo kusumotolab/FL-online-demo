@@ -8,8 +8,9 @@ COPY gradle/ /backend/gradle/
 RUN ./gradlew build -x test --parallel --continue > /dev/null 2>&1 || true
 
 # build gtc
+COPY lib/ /backend/lib/
 COPY src/ /backend/src/
-RUN ./gradlew assemble
+RUN ./gradlew shadowJar
 
 
 FROM openjdk:17-slim
