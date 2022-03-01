@@ -33,3 +33,12 @@
   margin-left: 2em;
   height: 0;
 }
+
+.test {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-left: 0.1em;
+}

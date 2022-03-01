@@ -1,6 +1,8 @@
 import { useTests } from "../hooks/useTests";
 import styles from "../styles/Coverage.module.css";
 import Editor from "./Editor";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Ace } from "ace-builds";
@@ -165,10 +167,20 @@ function Coverage({
         <div className={styles.testMethods}>
           {testResults.map((testResult) => {
             const testMethod = testResult["testMethod"];
+            const failed = testResult["failed"];
             return (
               <FormControlLabel
                 key={`${testMethod}-label`}
-                label={testMethod}
+                label={
+                  <span className={styles.test}>
+                    {testMethod}
+                    {failed ? (
+                      <CancelIcon className={styles.icon} color="error" />
+                    ) : (
+                      <CheckCircleIcon className={styles.icon} color="success" />
+                    )}
+                  </span>
+                }
                 control={
                   <Checkbox
                     checked={checked[testMethod] || false}
