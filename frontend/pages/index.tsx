@@ -1,5 +1,6 @@
 import Editor from "../components/Editor";
 import FL from "../components/FL";
+import KGenProg from "../components/KGenProg";
 import { useKGenProg } from "../hooks/useKGenProg";
 import styles from "../styles/Home.module.css";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
@@ -16,25 +17,11 @@ import { useCallback, useState } from "react";
 const Home: NextPage = () => {
   const [srcEditor, setSrcEditor] = useState<Ace.Editor>();
   const [testEditor, setTestEditor] = useState<Ace.Editor>();
-  const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
 
   const [isRunning, setIsRunning] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [ctrl, setCtrl] = useState<"repair" | "fl" | null>(null);
-
-  const [kgpConsoleHistory, runKgp] = useKGenProg({
-    onSuccess: () => {
-      setIsRunning(false);
-      setIsSuccess(true);
-      setIsError(false);
-    },
-    onError: () => {
-      setIsRunning(false);
-      setIsSuccess(false);
-      setIsError(true);
-    },
-  });
 
   const loadDefaultSrc = useCallback((uri: RequestInfo): ((editor: Ace.Editor) => void) => {
     return (editor: Ace.Editor) => {
@@ -51,25 +38,21 @@ const Home: NextPage = () => {
   const resultElement = useCallback(() => {
     switch (ctrl) {
       case "repair":
+        if (typeof srcEditor === "undefined") return <></>;
+        if (typeof testEditor === "undefined") return <></>;
         return (
-          <Editor
-            className={styles.editorConsole}
-            headerText="Console"
-            onLoad={(editor) => setConsoleEditor(editor)}
-            name="console"
-            readOnly
-            value={kgpConsoleHistory
-              .filter((message) => message && message.data)
-              .map((message) => JSON.parse(message.data))
-              .filter((json) => json && json.stdout)
-              .map((json) => json.stdout as string)
-              .join()}
-            onInput={() => {
-              if (typeof consoleEditor !== "undefined") {
-                const lastLineNumber = consoleEditor.getSession().getLength();
-                const lastColumnNumber = consoleEditor.getSession().getLine(lastLineNumber).length;
-                consoleEditor.gotoLine(lastLineNumber, lastColumnNumber, false);
-              }
+          <KGenProg
+            src={srcEditor.getValue()}
+            test={testEditor.getValue()}
+            onSuccess={() => {
+              setIsRunning(false);
+              setIsSuccess(true);
+              setIsError(false);
+            }}
+            onError={() => {
+              setIsRunning(false);
+              setIsSuccess(false);
+              setIsError(true);
             }}
           />
         );
@@ -95,13 +78,12 @@ const Home: NextPage = () => {
       default:
         return <></>;
     }
-  }, [ctrl, kgpConsoleHistory]);
+  }, [ctrl]);
 
   const onClickRepair = useCallback(() => {
-    runKgp(srcEditor!.getValue(), testEditor!.getValue());
     setCtrl("repair");
     setIsRunning(true);
-  }, [srcEditor, testEditor]);
+  }, []);
 
   const onClickFL = useCallback(() => {
     setCtrl("fl");
