@@ -77,4 +77,16 @@ class TestControllerTest {
         .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
   }
 
+  @Test
+  void testNotContainsPackageName01() throws Exception {
+    final String src = Files.readString(Paths.get("example/NotContainsPackageName01/Foo.java"));
+    final String test = Files.readString(
+        Paths.get("example/NotContainsPackageName01/FooTest.java"));
+
+    var st = new SrcAndTests(src, test);
+
+    mockMvc.perform(post("/api/test").content(objectMapper.writeValueAsString(st))
+        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isBadRequest());
+  }
+
 }
