@@ -1,5 +1,7 @@
 package jp.kusumotolab.fldemo.data;
 
-public record SrcAndTests(String src, String test) {
+import javax.validation.constraints.NotBlank;
+
+public record SrcAndTests(@NotBlank String src, @NotBlank String test) {
 
 }

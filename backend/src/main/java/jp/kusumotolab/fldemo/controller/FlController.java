@@ -6,6 +6,7 @@ import jp.kusumotolab.fldemo.data.SrcAndTests;
 import jp.kusumotolab.fldemo.service.KgenprogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +23,7 @@ public class FlController {
 
   @PostMapping("all")
   @ResponseBody
-  public Map<String, FlResult> flAll(
-      @RequestBody
-          SrcAndTests st) {
+  public Map<String, FlResult> flAll(@Validated @RequestBody SrcAndTests st) {
     return kgenprogService.execFl(st);
   }
 }
