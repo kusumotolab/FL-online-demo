@@ -1,4 +1,4 @@
-package jp.kusumotolab.fldemo.response;
+package jp.kusumotolab.fldemo.data;
 
 import java.util.List;
 import java.util.Map;

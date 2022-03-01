@@ -1,8 +1,8 @@
 package jp.kusumotolab.fldemo.controller;
 
 import java.util.List;
+import jp.kusumotolab.fldemo.data.SrcAndTests;
 import jp.kusumotolab.fldemo.data.TestResultWithCoverage;
-import jp.kusumotolab.fldemo.request.SrcAndTests;
 import jp.kusumotolab.fldemo.service.KgenprogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
