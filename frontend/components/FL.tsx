@@ -74,7 +74,7 @@ function FL({
           .${className} {
             position: absolute;
             background-color: rgba(225, 95, 95, ${Math.tanh(suspiciousness) * 0.9});
-            z-index:20;
+            z-index: 20;
           }
         `;
     }
