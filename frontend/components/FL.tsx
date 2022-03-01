@@ -114,7 +114,10 @@ function FL({
         name="fl"
         readOnly
         value={src}
-        onLoad={(editor) => setEditor(editor)}
+        onLoad={(editor) => {
+          setEditor(editor);
+          editor.setShowFoldWidgets(false);
+        }}
         {...other}
       />
     </>
