@@ -1,4 +1,8 @@
-FROM openjdk:17-slim as builder
+FROM openjdk:17-slim AS base
+
+FROM base AS dev
+
+FROM base AS builder
 
 WORKDIR /backend
 

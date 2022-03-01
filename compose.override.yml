@@ -17,8 +17,8 @@ services:
         }
         npm run dev
   backend:
-    ports:
-      - 8080:8080
+    build:
+      target: dev
     volumes:
       - type: bind
         source: ./backend/
