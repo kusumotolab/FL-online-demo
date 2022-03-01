@@ -20,16 +20,15 @@ import jp.kusumotolab.kgenprog.ga.variant.VariantStore;
 import jp.kusumotolab.kgenprog.project.jdt.JDTASTConstruction;
 import jp.kusumotolab.kgenprog.project.test.LocalTestExecutor;
 import jp.kusumotolab.kgenprog.project.test.TestResults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@Slf4j
 public class KgenprogService {
 
-  private static final Logger logger = LoggerFactory.getLogger(KgenprogService.class);
   private Project project;
 
   public Map<String, FlResult> execFl(final SrcAndTests st) {
@@ -59,7 +58,7 @@ public class KgenprogService {
 
   private void initProject(final SrcAndTests st) {
     project = Project.build(st);
-    logger.info("Built project " + project);
+    log.info("Built project " + project);
   }
 
   private Variant createInitialVariant() {
@@ -76,11 +75,11 @@ public class KgenprogService {
     final VariantStore vs = new VariantStore(config, strategies);
     final Variant initialVariant = vs.getInitialVariant();
 
-    logger.info(
+    log.info(
         project.projectDir() + " test results\n" + initialVariant.getTestResults().toString());
 
     if (!initialVariant.isBuildSucceeded()) {
-      logger.warn(project.projectDir().toString() + "built failed");
+      log.warn(project.projectDir().toString() + "built failed");
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Build failed");
     }
 

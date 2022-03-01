@@ -43,7 +43,7 @@ public class TestResultWithCoverage {
   }
 
   public static List<Coverage> makeCoverages(
-      jp.kusumotolab.kgenprog.project.test.Coverage coverage, final String src) {
+      final jp.kusumotolab.kgenprog.project.test.Coverage coverage, final String src) {
     final List<Coverage> ret = new ArrayList<>();
     for (int i = 0; i < coverage.getStatusesSize(); i++) {
       final String status = coverage.getStatus(i).name();
