@@ -1,5 +1,5 @@
 import { useKGenProg } from "../hooks/useKGenProg";
-import styles from "../styles/FL.module.css";
+import styles from "../styles/KGenProg.module.css";
 import Editor from "./Editor";
 import { Ace } from "ace-builds";
 import { useEffect, useState } from "react";
