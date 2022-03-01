@@ -1,11 +1,10 @@
 import Editor from "../components/Editor";
 import FL from "../components/FL";
-import { useKGenProg } from "../hooks/useKGenProg";
+import KGenProg from "../components/KGenProg";
 import styles from "../styles/Home.module.css";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Ace } from "ace-builds";
@@ -16,25 +15,11 @@ import { useCallback, useState } from "react";
 const Home: NextPage = () => {
   const [srcEditor, setSrcEditor] = useState<Ace.Editor>();
   const [testEditor, setTestEditor] = useState<Ace.Editor>();
-  const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
 
   const [isRunning, setIsRunning] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [ctrl, setCtrl] = useState<"repair" | "fl" | null>(null);
-
-  const [kgpConsoleHistory, runKgp] = useKGenProg({
-    onSuccess: () => {
-      setIsRunning(false);
-      setIsSuccess(true);
-      setIsError(false);
-    },
-    onError: () => {
-      setIsRunning(false);
-      setIsSuccess(false);
-      setIsError(true);
-    },
-  });
 
   const loadDefaultSrc = useCallback((uri: RequestInfo): ((editor: Ace.Editor) => void) => {
     return (editor: Ace.Editor) => {
@@ -48,60 +33,48 @@ const Home: NextPage = () => {
     };
   }, []);
 
+  const onSuccess = useCallback(() => {
+    setIsRunning(false);
+    setIsSuccess(true);
+    setIsError(false);
+  }, []);
+  const onError = useCallback(() => {
+    setIsRunning(false);
+    setIsSuccess(false);
+    setIsError(true);
+  }, []);
+
   const resultElement = useCallback(() => {
+    if (typeof srcEditor === "undefined") return <></>;
+    if (typeof testEditor === "undefined") return <></>;
     switch (ctrl) {
       case "repair":
         return (
-          <Editor
-            className={styles.editorConsole}
-            headerText="Console"
-            onLoad={(editor) => setConsoleEditor(editor)}
-            name="console"
-            readOnly
-            value={kgpConsoleHistory
-              .filter((message) => message && message.data)
-              .map((message) => JSON.parse(message.data))
-              .filter((json) => json && json.stdout)
-              .map((json) => json.stdout as string)
-              .join()}
-            onInput={() => {
-              if (typeof consoleEditor !== "undefined") {
-                const lastLineNumber = consoleEditor.getSession().getLength();
-                const lastColumnNumber = consoleEditor.getSession().getLine(lastLineNumber).length;
-                consoleEditor.gotoLine(lastLineNumber, lastColumnNumber, false);
-              }
-            }}
+          <KGenProg
+            src={srcEditor.getValue()}
+            test={testEditor.getValue()}
+            onSuccess={onSuccess}
+            onError={onError}
           />
         );
       case "fl":
-        if (typeof srcEditor === "undefined") return <></>;
-        if (typeof testEditor === "undefined") return <></>;
         return (
           <FL
             src={srcEditor.getValue()}
             test={testEditor.getValue()}
-            onSuccess={() => {
-              setIsRunning(false);
-              setIsSuccess(true);
-              setIsError(false);
-            }}
-            onError={() => {
-              setIsRunning(false);
-              setIsSuccess(false);
-              setIsError(true);
-            }}
+            onSuccess={onSuccess}
+            onError={onError}
           />
         );
       default:
         return <></>;
     }
-  }, [ctrl, kgpConsoleHistory]);
+  }, [ctrl]);
 
   const onClickRepair = useCallback(() => {
-    runKgp(srcEditor!.getValue(), testEditor!.getValue());
     setCtrl("repair");
     setIsRunning(true);
-  }, [srcEditor, testEditor]);
+  }, []);
 
   const onClickFL = useCallback(() => {
     setCtrl("fl");

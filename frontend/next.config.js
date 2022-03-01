@@ -21,18 +21,6 @@ const nextConfig = {
 
     return config
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/kdemo/:slug*',
-        destination: process.env.REPAIR_API_ENDPOINT + '/api/:slug*', // Matched parameters can be used in the destination
-      },
-      {
-        source: '/api/fl/:slug*',
-        destination: process.env.FL_API_ENDPOINT + '/api/fl/:slug*', // Matched parameters can be used in the destination
-      },
-    ]
-  }
 }
 
 module.exports = nextConfig

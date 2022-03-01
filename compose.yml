@@ -5,10 +5,19 @@ services:
       context: ./frontend/
     working_dir: /frontend/
     image: fl-online-demo-frontend
-    ports:
-      - 3000:3000
   backend:
     build:
       context: ./backend/
     working_dir: /backend/
     image: fl-online-demo-backend
+  kdemo:
+    build: https://github.com/kusumotolab/kGenProg-online-demo.git#8d8ceb60d344acc86515b4863ce69ef00e699ae6
+  nginx:
+    image: nginx:1.21.6
+    volumes:
+      - type: bind
+        source: ./nginx/default.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+    ports:
+      - 3000:80

@@ -2,8 +2,6 @@ services:
   frontend:
     build:
       target: dev
-    ports:
-      - 3000:3000
     volumes:
       - type: bind
         source: ./frontend/
@@ -17,8 +15,8 @@ services:
         }
         npm run dev
   backend:
-    ports:
-      - 8080:8080
+    build:
+      target: dev
     volumes:
       - type: bind
         source: ./backend/
@@ -26,3 +24,8 @@ services:
     command:
       - ./gradlew
       - bootRun
+  nginx:
+    command:
+      - nginx-debug
+      - -g
+      - daemon off;

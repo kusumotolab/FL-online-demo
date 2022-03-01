@@ -11,6 +11,7 @@ const useKGenProg = ({ onSuccess, onError }: { onSuccess?: () => void; onError?:
     onOpen: () => setMessageHistory(defaultMessageHistory),
     onClose: onSuccess,
     onError: onError,
+    retryOnError: false,
   });
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const useKGenProg = ({ onSuccess, onError }: { onSuccess?: () => void; onError?:
   const assignRun = useCallback((src: string, test: string) => {
     const data = { src: src, test: test };
 
-    fetch("./api/kdemo/submission", {
+    fetch(new URL("./api/submission", process.env.NEXT_PUBLIC_REPAIR_API_ENDPOINT).href, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +31,9 @@ const useKGenProg = ({ onSuccess, onError }: { onSuccess?: () => void; onError?:
       body: JSON.stringify(data),
     })
       .then(checkFetchError)
-      .then((text) => setSocketUrl("ws://tyr.ics.es.osaka-u.ac.jp/" + text.key))
+      .then((text) =>
+        setSocketUrl(new URL(`./${text.key}`, process.env.NEXT_PUBLIC_REPAIR_WS_ENDPOINT).href),
+      )
       .catch((err) => {
         console.error(err);
         if (typeof onError !== "undefined") onError();
