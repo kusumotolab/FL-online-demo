@@ -1,12 +1,10 @@
 import Editor from "../components/Editor";
 import FL from "../components/FL";
 import KGenProg from "../components/KGenProg";
-import { useKGenProg } from "../hooks/useKGenProg";
 import styles from "../styles/Home.module.css";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Ace } from "ace-builds";
@@ -35,44 +33,37 @@ const Home: NextPage = () => {
     };
   }, []);
 
+  const onSuccess = useCallback(() => {
+    setIsRunning(false);
+    setIsSuccess(true);
+    setIsError(false);
+  }, []);
+  const onError = useCallback(() => {
+    setIsRunning(false);
+    setIsSuccess(false);
+    setIsError(true);
+  }, []);
+
   const resultElement = useCallback(() => {
+    if (typeof srcEditor === "undefined") return <></>;
+    if (typeof testEditor === "undefined") return <></>;
     switch (ctrl) {
       case "repair":
-        if (typeof srcEditor === "undefined") return <></>;
-        if (typeof testEditor === "undefined") return <></>;
         return (
           <KGenProg
             src={srcEditor.getValue()}
             test={testEditor.getValue()}
-            onSuccess={() => {
-              setIsRunning(false);
-              setIsSuccess(true);
-              setIsError(false);
-            }}
-            onError={() => {
-              setIsRunning(false);
-              setIsSuccess(false);
-              setIsError(true);
-            }}
+            onSuccess={onSuccess}
+            onError={onError}
           />
         );
       case "fl":
-        if (typeof srcEditor === "undefined") return <></>;
-        if (typeof testEditor === "undefined") return <></>;
         return (
           <FL
             src={srcEditor.getValue()}
             test={testEditor.getValue()}
-            onSuccess={() => {
-              setIsRunning(false);
-              setIsSuccess(true);
-              setIsError(false);
-            }}
-            onError={() => {
-              setIsRunning(false);
-              setIsSuccess(false);
-              setIsError(true);
-            }}
+            onSuccess={onSuccess}
+            onError={onError}
           />
         );
       default:
