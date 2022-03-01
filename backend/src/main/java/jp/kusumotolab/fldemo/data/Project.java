@@ -1,9 +1,9 @@
-package jp.kusumotolab.fldemo.common;
+package jp.kusumotolab.fldemo.data;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import jp.kusumotolab.fldemo.data.SrcAndTests;
+import jp.kusumotolab.fldemo.common.SourceUtil;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import jp.kusumotolab.fldemo.common.FlKind;
-import jp.kusumotolab.fldemo.common.Project;
+import jp.kusumotolab.fldemo.data.Project;
 import jp.kusumotolab.fldemo.data.FlResult;
 import jp.kusumotolab.fldemo.data.SrcAndTests;
 import jp.kusumotolab.fldemo.data.TestResultWithCoverage;
