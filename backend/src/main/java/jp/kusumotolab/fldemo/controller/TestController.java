@@ -17,16 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Scope("request")
 public class TestController {
 
-  @Autowired
-  private KgenprogService kgenprogService;
+  @Autowired private KgenprogService kgenprogService;
 
-  @PostMapping("")
+  @PostMapping
   @ResponseBody
-  public List<TestResultWithCoverage> execTests(
-      @RequestBody
-          SrcAndTests st) {
+  public List<TestResultWithCoverage> execTests(@RequestBody SrcAndTests st) {
     return kgenprogService.execTests(st);
   }
-
-
 }

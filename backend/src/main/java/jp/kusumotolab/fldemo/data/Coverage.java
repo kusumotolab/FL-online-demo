@@ -7,5 +7,4 @@ public class Coverage {
 
   private final int lineNumber;
   private final String status;
-
 }

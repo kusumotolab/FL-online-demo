@@ -38,7 +38,8 @@ public class KgenprogService {
 
     final Map<String, FlResult> ret = new HashMap<>();
     for (final var e : FlKind.values()) {
-      ret.put(e.name(),
+      ret.put(
+          e.name(),
           new FlResult(
               e.execFl(initialVariant.getGeneratedSourceCode(), initialVariant.getTestResults())));
     }
@@ -50,8 +51,10 @@ public class KgenprogService {
     final Variant initialVariant = createInitialVariant();
     final TestResults testResults = initialVariant.getTestResults();
 
-    return testResults.getExecutedTestFQNs().stream().map(testResults::getTestResult)
-        .map(e -> TestResultWithCoverage.valueOf(e, project.src())).toList();
+    return testResults.getExecutedTestFQNs().stream()
+        .map(testResults::getTestResult)
+        .map(e -> TestResultWithCoverage.valueOf(e, project.src()))
+        .toList();
   }
 
   private void initProject(final SrcAndTests st) {
@@ -60,12 +63,16 @@ public class KgenprogService {
   }
 
   private Variant createInitialVariant() {
-    final Configuration config = new Builder(project.projectDir(), project.srcPath(),
-        project.testPath()).build();
-    final Strategies strategies = new Strategies(config.getFaultLocalization()
-        .initialize(), new JDTASTConstruction(), new DefaultSourceCodeGeneration(),
-        new DefaultCodeValidation(), new LocalTestExecutor(config),
-        new DefaultVariantSelection(config.getHeadcount(), new Random(config.getRandomSeed())));
+    final Configuration config =
+        new Builder(project.projectDir(), project.srcPath(), project.testPath()).build();
+    final Strategies strategies =
+        new Strategies(
+            config.getFaultLocalization().initialize(),
+            new JDTASTConstruction(),
+            new DefaultSourceCodeGeneration(),
+            new DefaultCodeValidation(),
+            new LocalTestExecutor(config),
+            new DefaultVariantSelection(config.getHeadcount(), new Random(config.getRandomSeed())));
     final VariantStore vs = new VariantStore(config, strategies);
     final Variant initialVariant = vs.getInitialVariant();
 

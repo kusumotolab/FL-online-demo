@@ -1,6 +1,5 @@
 package jp.kusumotolab.fldemo.common;
 
-
 import java.util.List;
 import jp.kusumotolab.kgenprog.fl.Ample;
 import jp.kusumotolab.kgenprog.fl.DStar;
@@ -20,7 +19,6 @@ public enum FlKind {
   Ochiai(new Ochiai()),
   Tarantula(new Tarantula()),
   Zolter(new Zoltar());
-
 
   private final FaultLocalization fl;
 

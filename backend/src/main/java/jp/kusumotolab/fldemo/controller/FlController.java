@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Scope("request")
 public class FlController {
 
-  @Autowired
-  private KgenprogService kgenprogService;
+  @Autowired private KgenprogService kgenprogService;
 
   @PostMapping("all")
   @ResponseBody
