@@ -15,12 +15,8 @@ function KGenProg({
   const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
 
   const [kgpConsoleHistory, runKgp] = useKGenProg({
-    onSuccess: () => {
-      if (typeof onSuccess !== "undefined") onSuccess();
-    },
-    onError: () => {
-      if (typeof onError !== "undefined") onError();
-    },
+    onSuccess: onSuccess,
+    onError: onError,
   });
 
   useEffect(() => {
