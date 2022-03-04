@@ -67,9 +67,9 @@ class TestControllerTest {
   @Test
   void testCloseToZero01() throws Exception {
     final String src = Files.readString(
-        Paths.get("example/CloseToZero01/src/example/CloseToZero.java"));
+        Paths.get("example/CloseToZero01/src/com/example/CloseToZero.java"));
     final String test = Files.readString(
-        Paths.get("example/CloseToZero01/src/example/CloseToZeroTest.java"));
+        Paths.get("example/CloseToZero01/src/com/example/CloseToZeroTest.java"));
 
     var st = new SrcAndTests(src, test);
 

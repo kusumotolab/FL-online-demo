@@ -1,5 +1,6 @@
 package jp.kusumotolab.fldemo.data;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +37,7 @@ public record Project(String src, String srcFQN, String srcClassName, String src
       final Path projectDir = Files.createTempDirectory("fldemo_");
       projectBuilder.projectDir(projectDir);
 
-      final Path srcDir = projectDir.resolve(srcPackageName);
+      final Path srcDir = projectDir.resolve(srcPackageName.replace(".", File.separator));
       Files.createDirectories(srcDir);
 
       final Path srcPath = projectDir.resolve(srcFQN);
