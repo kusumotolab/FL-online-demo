@@ -2,7 +2,7 @@ import { useKGenProg } from "../hooks/useKGenProg";
 import styles from "../styles/KGenProg.module.css";
 import Editor from "./Editor";
 import { Ace } from "ace-builds";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
 function KGenProg({
@@ -13,6 +13,8 @@ function KGenProg({
   ...other
 }: { src: string; test: string; onSuccess?: () => void; onError?: () => void } & IAceEditorProps) {
   const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
+  const srcRef = useRef(src);
+  const testRef = useRef(test);
 
   const [kgpConsoleHistory, runKgp] = useKGenProg({
     onSuccess: onSuccess,
@@ -20,7 +22,15 @@ function KGenProg({
   });
 
   useEffect(() => {
+    if (src === srcRef.current && test === testRef.current) {
+      if (typeof onSuccess !== "undefined") onSuccess();
+    }
+  });
+
+  useEffect(() => {
     runKgp(src, test);
+    srcRef.current = src;
+    testRef.current = test;
   }, [src, test]);
 
   return (

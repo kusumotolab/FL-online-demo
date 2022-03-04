@@ -79,7 +79,7 @@ const Home: NextPage = () => {
       default:
         return <></>;
     }
-  }, [ctrl]);
+  }, [ctrl, srcEditor, testEditor]);
 
   const onClickRepair = useCallback(() => {
     setCtrl("repair");

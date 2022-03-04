@@ -34,7 +34,7 @@ function Coverage({
   useEffect(() => {
     if (!isLoading && testResults && typeof onSuccess !== "undefined") onSuccess();
     if (!isLoading && error && typeof onError !== "undefined") onError();
-  }, [testResults, error, isLoading, onSuccess, onError]);
+  });
 
   useEffect(() => {
     if (typeof testResults === "undefined") return;

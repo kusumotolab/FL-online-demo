@@ -26,7 +26,7 @@ function FL({
   useEffect(() => {
     if (!isLoading && flResult && typeof onSuccess !== "undefined") onSuccess();
     if (!isLoading && error && typeof onError !== "undefined") onError();
-  }, [flResult, error, isLoading, onSuccess, onError]);
+  });
 
   useEffect(() => {
     if (isLoading) return;
