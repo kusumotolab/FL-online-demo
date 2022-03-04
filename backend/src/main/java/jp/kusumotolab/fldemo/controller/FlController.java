@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import jp.kusumotolab.fldemo.common.FlKind;
 import jp.kusumotolab.fldemo.data.FlResult;
 import jp.kusumotolab.fldemo.data.SrcAndTests;
@@ -35,7 +34,7 @@ public class FlController {
         @ApiResponse(responseCode = "400", description = "Validation Error")
       })
   @PostMapping("all")
-  public Map<String, FlResult> flAll(@Validated @RequestBody SrcAndTests st) {
+  public List<FlResult> flAll(@Validated @RequestBody SrcAndTests st) {
     return kgenprogService.execFl(st);
   }
 

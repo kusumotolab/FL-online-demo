@@ -1,9 +1,8 @@
 package jp.kusumotolab.fldemo.service;
 
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import jp.kusumotolab.fldemo.common.FlKind;
 import jp.kusumotolab.fldemo.common.SourceUtil;
@@ -33,15 +32,15 @@ public class KgenprogService {
 
   private Project project;
 
-  public Map<String, FlResult> execFl(final SrcAndTests st) {
+  public List<FlResult> execFl(final SrcAndTests st) {
     initProject(st);
     final Variant initialVariant = createInitialVariant();
 
-    final Map<String, FlResult> ret = new HashMap<>();
+    final List<FlResult> ret = new ArrayList<>();
     for (final var e : FlKind.values()) {
-      ret.put(
-          e.name(),
+      ret.add(
           new FlResult(
+              e.name(),
               e.execFl(initialVariant.getGeneratedSourceCode(), initialVariant.getTestResults())));
     }
     return ret;

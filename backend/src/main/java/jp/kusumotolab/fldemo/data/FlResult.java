@@ -2,25 +2,25 @@ package jp.kusumotolab.fldemo.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import jp.kusumotolab.kgenprog.fl.Suspiciousness;
+import lombok.Data;
 
+@Data
 public class FlResult {
 
-  @JsonProperty("suspiciousnesses")
-  private final Map<Integer, Double> suspiciousnesses;
+  @JsonProperty("technique")
+  private final String technique;
 
-  public FlResult(List<Suspiciousness> ss) {
+  @JsonProperty("suspiciousnesses")
+  private final List<Suspiciousness> suspiciousnesses;
+
+  public FlResult(final String tech, final List<jp.kusumotolab.kgenprog.fl.Suspiciousness> ss) {
+    this.technique = tech;
     suspiciousnesses =
         ss.stream()
-            .collect(
-                Collectors.toMap(
-                    e -> e.getLocation().inferLineNumbers().start,
-                    Suspiciousness::getValue)); // todo 情報落ち
-  }
-
-  public Map<Integer, Double> getSuspiciousnesses() {
-    return suspiciousnesses;
+            .map(
+                e ->
+                    new Suspiciousness(
+                        e.getLocation().inferLineNumbers().start, e.getValue())) // todo 情報落ち
+            .toList();
   }
 }
