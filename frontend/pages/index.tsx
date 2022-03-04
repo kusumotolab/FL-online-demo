@@ -98,6 +98,7 @@ const Home: NextPage = () => {
 
   const isRepairLoading = ctrl === "repair" && isRunning;
   const isFLLoading = ctrl === "fl" && isRunning;
+  const isTestLoading = ctrl === "test" && isRunning;
 
   return (
     <div className={styles.container}>
@@ -142,7 +143,7 @@ const Home: NextPage = () => {
           </Button>
           <Button
             onClick={onClickTest}
-            startIcon={isFLLoading ? <CircularProgress color="inherit" /> : <PlayArrowIcon />}
+            startIcon={isTestLoading ? <CircularProgress color="inherit" /> : <PlayArrowIcon />}
             color={
               ctrl !== "test" ? "primary" : isSuccess ? "success" : isError ? "error" : "primary"
             }
