@@ -5,11 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Coverage")
 public record Coverage(
-    @Schema(type = "String", required = true, description = "line number", example = "1")
+    @Schema(required = true, description = "line number", example = "1")
     @JsonProperty("lineNumber")
     int lineNumber,
 
-    @Schema(type = "String", required = true, description = "status of coverage. The value is EMPTY, COVERED, or NOT_COVERED.", example = "COVERED")
+    @Schema(required = true, description = "status of coverage. The value is EMPTY, COVERED, or NOT_COVERED.", example = "COVERED")
     @JsonProperty("status")
     String status
 ) {
