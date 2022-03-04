@@ -42,7 +42,7 @@ function Coverage({
       Object.fromEntries(
         testResults.map((testResult) => {
           const testMethod = testResult["testMethod"];
-          return [testMethod, false];
+          return [testMethod, true];
         }),
       ),
     );
