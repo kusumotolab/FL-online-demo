@@ -54,6 +54,7 @@ const Home: NextPage = () => {
           <KGenProg
             src={srcEditor.getValue()}
             test={testEditor.getValue()}
+            onStart={() => setIsRunning(true)}
             onSuccess={onSuccess}
             onError={onError}
           />
@@ -83,7 +84,6 @@ const Home: NextPage = () => {
 
   const onClickRepair = useCallback(() => {
     setCtrl("repair");
-    setIsRunning(true);
   }, []);
 
   const onClickFL = useCallback(() => {

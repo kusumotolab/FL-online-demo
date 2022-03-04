@@ -2,7 +2,15 @@ import checkFetchError from "../util/checkFetchError";
 import { useCallback, useEffect, useState } from "react";
 import useWebSocket from "react-use-websocket";
 
-const useKGenProg = ({ onSuccess, onError }: { onSuccess?: () => void; onError?: () => void }) => {
+const useKGenProg = ({
+  onStart,
+  onSuccess,
+  onError,
+}: {
+  onStart?: () => void;
+  onSuccess?: () => void;
+  onError?: () => void;
+}) => {
   const defaultMessageHistory: MessageEvent[] = [];
 
   const [socketUrl, setSocketUrl] = useState<string | null>(null);
@@ -20,27 +28,29 @@ const useKGenProg = ({ onSuccess, onError }: { onSuccess?: () => void; onError?:
     }
   }, [lastMessage, setMessageHistory]);
 
-  const assignRun = useCallback((src: string, test: string) => {
-    const data = { src: src, test: test };
+  const assignRun = useCallback(
+    (src: string, test: string) => {
+      if (typeof onStart !== "undefined") onStart();
 
-    fetch(new URL("./api/submission", process.env.NEXT_PUBLIC_REPAIR_API_ENDPOINT).href, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then(checkFetchError)
-      .then((text) =>
-        setSocketUrl(new URL(`./${text.key}`, process.env.NEXT_PUBLIC_REPAIR_WS_ENDPOINT).href),
-      )
-      .catch((err) => {
-        console.error(err);
-        if (typeof onError !== "undefined") onError();
-      });
-  }, []);
+      const data = { src: src, test: test };
 
-  return [messageHistory, assignRun] as const;
+      fetch(new URL("./api/submission", process.env.NEXT_PUBLIC_REPAIR_API_ENDPOINT).href, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then(checkFetchError)
+        .then((text) =>
+          setSocketUrl(new URL(`./${text.key}`, process.env.NEXT_PUBLIC_REPAIR_WS_ENDPOINT).href),
+        )
+        .catch(onError);
+    },
+    [onStart, onError],
+  );
+
+  return { messageHistory, runKgp: assignRun } as const;
 };
 
 export { useKGenProg };
