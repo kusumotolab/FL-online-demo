@@ -1,4 +1,4 @@
-name: Backend test branches
+name: myers_triangle-test-branches
 
 on:
   workflow_dispatch:
