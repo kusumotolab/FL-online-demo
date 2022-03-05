@@ -92,7 +92,15 @@ function FL({
     [setSelectedTechnique],
   );
 
-  if (error) return <div>Error!</div>;
+  if (error) {
+    console.error(error);
+    return (
+      <>
+        <h2>Error!</h2>
+        <pre>{JSON.stringify(error, null, 4).replaceAll("\\n", "\n").replaceAll("\\t", "\t")}</pre>
+      </>
+    );
+  }
   if (isLoading) return <div>Loading...</div>;
 
   return (

@@ -1,6 +1,10 @@
-const checkFetchError = (resp: Response) => {
+const checkFetchError = async (resp: Response) => {
   if (resp.ok) return resp.json();
-  throw Promise.reject(resp);
+  let error = resp;
+  try {
+    error = await resp.json();
+  } catch {}
+  throw error;
 };
 
 export default checkFetchError;
