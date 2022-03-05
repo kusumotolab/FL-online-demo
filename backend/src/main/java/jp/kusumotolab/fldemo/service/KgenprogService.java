@@ -1,5 +1,6 @@
 package jp.kusumotolab.fldemo.service;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ public class KgenprogService {
     return testResults.getExecutedTestFQNs().stream()
         .map(testResults::getTestResult)
         .map(e -> TestResultWithCoverage.valueOf(e, project.src(), testOrder))
+        .sorted(Comparator.comparing(TestResultWithCoverage::getTestOrder))
         .toList();
   }
 
