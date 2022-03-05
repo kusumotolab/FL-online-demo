@@ -14,6 +14,9 @@ public class TestResultWithCoverage {
   @JsonProperty("testMethod")
   private final String testMethod;
 
+  @JsonProperty("testOrder")
+  private final int testOrder;
+
   @JsonProperty("coverages")
   private final List<Coverage> coverages;
 
@@ -26,9 +29,11 @@ public class TestResultWithCoverage {
   @JsonProperty("failedReason")
   private final String failedReason;
 
-  public static TestResultWithCoverage valueOf(final TestResult testResult, final String src) {
+  public static TestResultWithCoverage valueOf(
+      final TestResult testResult, final String src, final List<String> testOrderList) {
     final String executedTestFQN = testResult.executedTestFQN.value;
     final String testMethod = SourceUtil.inferMethodNameFromFQN(executedTestFQN);
+    final int testOrder = testOrderList.indexOf(testMethod);
     final boolean failed = testResult.failed;
     final String failedReason = testResult.getFailedReason();
 
@@ -39,7 +44,8 @@ public class TestResultWithCoverage {
             .flatMap(List::stream)
             .toList();
 
-    return new TestResultWithCoverage(testMethod, coverages, executedTestFQN, failed, failedReason);
+    return new TestResultWithCoverage(
+        testMethod, testOrder, coverages, executedTestFQN, failed, failedReason);
   }
 
   public static List<Coverage> makeCoverages(

@@ -1,6 +1,9 @@
 package jp.kusumotolab.fldemo.common;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
@@ -37,6 +40,17 @@ public class SourceUtil {
       return "";
     }
     return FQN.substring(lastIndexOf + 1);
+  }
+
+  public static List<String> inferTestMethodNames(final String test) {
+    final Pattern p = Pattern.compile("@Test\\s*(public )?void (\\S+)\\(\\)");
+    final Matcher m = p.matcher(test);
+    if (!m.find()) return Collections.emptyList();
+    final List<String> testMethodName = new ArrayList<>();
+    do {
+      testMethodName.add(m.group(2));
+    } while (m.find());
+    return testMethodName;
   }
 
   private static String verifyOrThrow(final String s, final String reason) {
