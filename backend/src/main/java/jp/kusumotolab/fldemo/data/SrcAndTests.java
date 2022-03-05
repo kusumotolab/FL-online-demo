@@ -2,6 +2,10 @@ package jp.kusumotolab.fldemo.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 import javax.validation.constraints.NotBlank;
 
 @Schema(description = "source and tests to exec")
@@ -16,4 +20,25 @@ public record SrcAndTests(
     @JsonProperty("test")
     String test) {
 
+    public static class Builder{
+        private String src;
+        private String test;
+
+         public Builder srcFromPath(String srcPath) throws IOException {
+            this.src = Files.readString(Paths.get(srcPath));
+            return this;
+        }
+
+        public Builder testFromPath(String testPath) throws IOException {
+            this.test = Files.readString(Paths.get(testPath));
+            return this;
+        }
+
+        public SrcAndTests build(){
+            Objects.requireNonNull(this.src);
+            Objects.requireNonNull(this.test);
+
+            return new SrcAndTests(src, test);
+        }
+    }
 }
