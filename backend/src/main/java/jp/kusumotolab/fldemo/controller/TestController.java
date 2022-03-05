@@ -21,14 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Test")
 public class TestController {
 
-  @Autowired
-  private KgenprogService kgenprogService;
+  @Autowired private KgenprogService kgenprogService;
 
   @Operation(summary = "Exec Test")
   @ApiResponses(
       value = {
-          @ApiResponse(responseCode = "200", description = "Succeeded"),
-          @ApiResponse(responseCode = "400", description = "Validation Error")
+        @ApiResponse(responseCode = "200", description = "Succeeded"),
+        @ApiResponse(responseCode = "400", description = "Validation Error")
       })
   @PostMapping
   public List<TestResultWithCoverage> execTests(@RequestBody SrcAndTests st) {

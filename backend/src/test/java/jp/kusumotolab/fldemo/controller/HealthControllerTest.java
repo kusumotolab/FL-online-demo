@@ -12,20 +12,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 class HealthControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @Test
   void test() throws Exception {
-    mockMvc.perform(get("/api/health"))
-        .andExpect(status().isOk())
-        .andExpect(content().string(""));
+    mockMvc.perform(get("/api/health")).andExpect(status().isOk()).andExpect(content().string(""));
   }
-
 }

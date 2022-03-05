@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import jp.kusumotolab.fldemo.common.FlKind;
-import jp.kusumotolab.fldemo.data.Project;
 import jp.kusumotolab.fldemo.data.FlResult;
+import jp.kusumotolab.fldemo.data.Project;
 import jp.kusumotolab.fldemo.data.SrcAndTests;
 import jp.kusumotolab.fldemo.data.TestResultWithCoverage;
 import jp.kusumotolab.kgenprog.Configuration;
@@ -75,8 +75,7 @@ public class KgenprogService {
     final VariantStore vs = new VariantStore(config, strategies);
     final Variant initialVariant = vs.getInitialVariant();
 
-    log.info(
-        project.projectDir() + " test results\n" + initialVariant.getTestResults().toString());
+    log.info(project.projectDir() + " test results\n" + initialVariant.getTestResults().toString());
 
     if (!initialVariant.isBuildSucceeded()) {
       log.warn(project.projectDir().toString() + "built failed");

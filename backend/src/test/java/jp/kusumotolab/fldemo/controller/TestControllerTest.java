@@ -22,11 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class TestControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
   @Test
   void testEmpty() throws Exception {
@@ -35,58 +33,83 @@ class TestControllerTest {
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/api/test").content(objectMapper.writeValueAsString(st))
-        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isBadRequest());
+    mockMvc
+        .perform(
+            post("/api/test")
+                .content(objectMapper.writeValueAsString(st))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isBadRequest());
   }
 
   @Test
   void testBuildFailure01() throws Exception {
-    final String src = Files.readString(
-        Paths.get("example/BuildFailure01/src/example/NonCompilable.java"));
-    final String test = Files.readString(
-        Paths.get("example/BuildSuccess01/src/example/FooTest.java")); //Compilable test
+    final String src =
+        Files.readString(Paths.get("example/BuildFailure01/src/example/NonCompilable.java"));
+    final String test =
+        Files.readString(
+            Paths.get("example/BuildSuccess01/src/example/FooTest.java")); // Compilable test
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/api/test").content(objectMapper.writeValueAsString(st))
-        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isBadRequest());
+    mockMvc
+        .perform(
+            post("/api/test")
+                .content(objectMapper.writeValueAsString(st))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isBadRequest());
   }
 
   @Test
   void testBuildSuccess01() throws Exception {
     final String src = Files.readString(Paths.get("example/BuildSuccess01/src/example/Foo.java"));
-    final String test = Files.readString(
-        Paths.get("example/BuildSuccess01/src/example/FooTest.java"));
+    final String test =
+        Files.readString(Paths.get("example/BuildSuccess01/src/example/FooTest.java"));
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/api/test").content(objectMapper.writeValueAsString(st))
-        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/api/test")
+                .content(objectMapper.writeValueAsString(st))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk());
   }
 
   @Test
   void testCloseToZero01() throws Exception {
-    final String src = Files.readString(
-        Paths.get("example/CloseToZero01/src/com/example/CloseToZero.java"));
-    final String test = Files.readString(
-        Paths.get("example/CloseToZero01/src/com/example/CloseToZeroTest.java"));
+    final String src =
+        Files.readString(Paths.get("example/CloseToZero01/src/com/example/CloseToZero.java"));
+    final String test =
+        Files.readString(Paths.get("example/CloseToZero01/src/com/example/CloseToZeroTest.java"));
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/api/test").content(objectMapper.writeValueAsString(st))
-        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
+    mockMvc
+        .perform(
+            post("/api/test")
+                .content(objectMapper.writeValueAsString(st))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isOk());
   }
 
   @Test
   void testNotContainsPackageName01() throws Exception {
     final String src = Files.readString(Paths.get("example/NotContainsPackageName01/Foo.java"));
-    final String test = Files.readString(
-        Paths.get("example/NotContainsPackageName01/FooTest.java"));
+    final String test =
+        Files.readString(Paths.get("example/NotContainsPackageName01/FooTest.java"));
 
     var st = new SrcAndTests(src, test);
 
-    mockMvc.perform(post("/api/test").content(objectMapper.writeValueAsString(st))
-        .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isBadRequest());
+    mockMvc
+        .perform(
+            post("/api/test")
+                .content(objectMapper.writeValueAsString(st))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isBadRequest());
   }
-
 }
