@@ -5,8 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import jp.kusumotolab.fldemo.data.SrcAndTests;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,10 +26,7 @@ class FlControllerTest {
 
   @Test
   void testEmpty() throws Exception {
-    final String src = "";
-    final String test = "";
-
-    var st = new SrcAndTests(src, test);
+    var st = new SrcAndTests("", "");
 
     mockMvc
         .perform(
@@ -44,13 +39,11 @@ class FlControllerTest {
 
   @Test
   void testBuildFailure01() throws Exception {
-    final String src =
-        Files.readString(Paths.get("example/BuildFailure01/src/example/NonCompilable.java"));
-    final String test =
-        Files.readString(
-            Paths.get("example/BuildSuccess01/src/example/FooTest.java")); // Compilable test
-
-    var st = new SrcAndTests(src, test);
+    final SrcAndTests st =
+        new SrcAndTests.Builder()
+            .srcFromPath("example/BuildFailure01/src/example/NonCompilable.java")
+            .testFromPath("example/BuildSuccess01/src/example/FooTest.java") // Compilable test
+            .build();
 
     mockMvc
         .perform(
@@ -63,11 +56,11 @@ class FlControllerTest {
 
   @Test
   void testBuildSuccess01() throws Exception {
-    final String src = Files.readString(Paths.get("example/BuildSuccess01/src/example/Foo.java"));
-    final String test =
-        Files.readString(Paths.get("example/BuildSuccess01/src/example/FooTest.java"));
-
-    var st = new SrcAndTests(src, test);
+    final SrcAndTests st =
+        new SrcAndTests.Builder()
+            .srcFromPath("example/BuildSuccess01/src/example/Foo.java")
+            .testFromPath("example/BuildSuccess01/src/example/FooTest.java")
+            .build();
 
     mockMvc
         .perform(
@@ -80,12 +73,11 @@ class FlControllerTest {
 
   @Test
   void testCloseToZero01() throws Exception {
-    final String src =
-        Files.readString(Paths.get("example/CloseToZero01/src/com/example/CloseToZero.java"));
-    final String test =
-        Files.readString(Paths.get("example/CloseToZero01/src/com/example/CloseToZeroTest.java"));
-
-    var st = new SrcAndTests(src, test);
+    final SrcAndTests st =
+        new SrcAndTests.Builder()
+            .srcFromPath("example/CloseToZero01/src/com/example/CloseToZero.java")
+            .testFromPath("example/CloseToZero01/src/com/example/CloseToZeroTest.java")
+            .build();
 
     mockMvc
         .perform(
@@ -98,12 +90,11 @@ class FlControllerTest {
 
   @Test
   void testNotContainsPackageName01() throws Exception {
-    final String src = Files.readString(Paths.get("example/NotContainsPackageName01/Foo.java"));
-    final String test =
-        Files.readString(Paths.get("example/NotContainsPackageName01/FooTest.java"));
-
-    var st = new SrcAndTests(src, test);
-
+    final SrcAndTests st =
+        new SrcAndTests.Builder()
+            .srcFromPath("example/NotContainsPackageName01/Foo.java")
+            .testFromPath("example/NotContainsPackageName01/FooTest.java")
+            .build();
     mockMvc
         .perform(
             post("/api/fl/all")
