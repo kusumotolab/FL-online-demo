@@ -13,12 +13,42 @@ import jp.kusumotolab.kgenprog.project.GeneratedSourceCode;
 import jp.kusumotolab.kgenprog.project.test.TestResults;
 
 public enum FlKind {
-  Ample(new Ample()),
-  DStar(new DStar()),
-  Jaccard(new Jaccard()),
-  Ochiai(new Ochiai()),
-  Tarantula(new Tarantula()),
-  Zolter(new Zoltar());
+  Ample(new Ample()) {
+    @Override
+    public double normalize(final double susp) {
+      return susp;
+    }
+  },
+  DStar(new DStar()) {
+    @Override
+    public double normalize(double susp) {
+      return Math.tanh(susp);
+    }
+  },
+  Jaccard(new Jaccard()) {
+    @Override
+    public double normalize(double susp) {
+      return susp;
+    }
+  },
+  Ochiai(new Ochiai()) {
+    @Override
+    public double normalize(double susp) {
+      return susp;
+    }
+  },
+  Tarantula(new Tarantula()) {
+    @Override
+    public double normalize(double susp) {
+      return susp;
+    }
+  },
+  Zolter(new Zoltar()) {
+    @Override
+    public double normalize(double susp) {
+      return susp;
+    }
+  };
 
   private final FaultLocalization fl;
 
@@ -33,4 +63,6 @@ public enum FlKind {
   public List<Suspiciousness> execFl(final GeneratedSourceCode src, final TestResults results) {
     return fl.exec(src, results);
   }
+
+  public abstract double normalize(final double susp);
 }
