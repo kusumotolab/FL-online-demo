@@ -4,8 +4,9 @@ FROM base AS dev
 
 FROM base AS build
 WORKDIR /build
-COPY . .
+COPY ./package.json ./package-lock.json ./
 RUN npm ci
+COPY . .
 RUN npm run build
 
 FROM node:17-buster-slim AS production
