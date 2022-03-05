@@ -25,6 +25,7 @@
 
 .checkboxes {
   overflow: auto;
+  padding-left: 1rem;
 }
 
 .testMethods {
