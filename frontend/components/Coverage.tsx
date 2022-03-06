@@ -178,6 +178,7 @@ function Coverage({
             const failed = testResult["failed"];
             return (
               <FormControlLabel
+                className={styles.label}
                 key={`${testMethod}-label`}
                 label={
                   <span className={styles.test}>
