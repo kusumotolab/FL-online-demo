@@ -57,10 +57,15 @@ function FL({
         .map(([key, value]) => ({ key, value }))
         .map((o) => o.value.reduce((a, b) => (a.suspiciousness > b.suspiciousness ? a : b)));
 
-      for (const { lineNumber: _lineNumber, suspiciousness: _suspiciousness } of suspiciousnesses) {
+      for (const {
+        lineNumber: _lineNumber,
+        suspiciousness: _suspiciousness,
+        normalizedSuspiciousness: _normalizedSuspiciousness,
+      } of suspiciousnesses) {
         const lineNumber = Number(_lineNumber);
         const className = `susp-line-${lineNumber}`;
         const suspiciousness = Number(_suspiciousness);
+        const normalizedSuspiciousness = Number(_normalizedSuspiciousness);
 
         // Range を取るためのワークアラウンド（Next.js で new Range() できるように import する方法が分からなかった）
         const range = editor.getSelectionRange();
@@ -80,15 +85,14 @@ function FL({
 
         const markerId = editor.session.addMarker(range, className, "fullLine");
         markerIds.add(markerId);
-        styleElementRef.current.textContent =
-          styleElementRef.current.textContent +
-          `
-          .${className} {
-            position: absolute;
-            background-color: rgba(225, 95, 95, ${Math.tanh(suspiciousness) * 0.9});
-            z-index: 20;
-          }
-        `;
+        // 範囲選択時の選択範囲が視認できるように alpha の最大値を 0.9 にしている
+        styleElementRef.current.textContent += `
+            .${className} {
+              position: absolute;
+              background-color: rgba(225, 95, 95, ${normalizedSuspiciousness * 0.9});
+              z-index: 20;
+            }
+          `;
       }
     }
 
