@@ -13,7 +13,7 @@ function FL({
   onError,
   ...other
 }: { src: string; test: string; onSuccess?: () => void; onError?: () => void } & IAceEditorProps) {
-  const { flResult, error, isLoading } = useFL(src, test);
+  const { flResults, error, isLoading } = useFL(src, test);
 
   const [editor, setEditor] = useState<Ace.Editor>();
   const [selectedTechnique, setSelectedTechnique] = useState("Ochiai");
@@ -24,15 +24,13 @@ function FL({
   }, []);
 
   useEffect(() => {
-    if (!isLoading && flResult && typeof onSuccess !== "undefined") onSuccess();
+    if (!isLoading && flResults && typeof onSuccess !== "undefined") onSuccess();
     if (!isLoading && error && typeof onError !== "undefined") onError();
   });
 
   useEffect(() => {
     if (isLoading) return;
     if (typeof editor === "undefined") return;
-
-    if (!(selectedTechnique in flResult)) return;
 
     const markerIds = new Set<number>();
 
@@ -43,47 +41,62 @@ function FL({
         .split(/\r?\n/)
         .map((s) => s.length),
     );
-    for (const [line, _suspiciousness] of Object.entries(
-      flResult[selectedTechnique]["suspiciousnesses"],
+
+    for (const flResult of flResults.filter(
+      (flResult) => flResult.technique === selectedTechnique,
     )) {
-      const lineNumber = Number(line);
-      const className = `susp-line-${lineNumber}`;
-      const suspiciousness = Number(_suspiciousness);
+      // flResult を lineNumber をキーとして groupBy して
+      // lineNumber ごとに suspiciousness の値が最大のものを抽出
+      const suspiciousnesses = Object.entries(
+        flResult.suspiciousnesses.reduce((obj, result) => {
+          obj[result.lineNumber] ??= [];
+          obj[result.lineNumber].push(result);
+          return obj;
+        }, {}),
+      )
+        .map(([key, value]) => ({ key, value }))
+        .map((o) => o.value.reduce((a, b) => (a.suspiciousness > b.suspiciousness ? a : b)));
 
-      // Range を取るためのワークアラウンド（Next.js で new Range() できるように import する方法が分からなかった）
-      const range = editor.getSelectionRange();
-      range.setStart(lineNumber - 1, 0);
-      range.setEnd(lineNumber - 1, 1);
+      for (const { lineNumber: _lineNumber, suspiciousness: _suspiciousness } of suspiciousnesses) {
+        const lineNumber = Number(_lineNumber);
+        const className = `susp-line-${lineNumber}`;
+        const suspiciousness = Number(_suspiciousness);
 
-      const lineLength = editor.session.getLine(lineNumber - 1).length + 1;
-      editor.session.insert(
-        {
-          row: lineNumber - 1,
-          column: lineLength,
-        },
-        `${" ".repeat(maxLength - lineLength + 4)}/* suspiciousness: ${Number(
-          suspiciousness,
-        ).toFixed(3)} */`,
-      );
+        // Range を取るためのワークアラウンド（Next.js で new Range() できるように import する方法が分からなかった）
+        const range = editor.getSelectionRange();
+        range.setStart(lineNumber - 1, 0);
+        range.setEnd(lineNumber - 1, 1);
 
-      const markerId = editor.session.addMarker(range, className, "fullLine");
-      markerIds.add(markerId);
-      styleElementRef.current.textContent =
-        styleElementRef.current.textContent +
-        `
+        const lineLength = editor.session.getLine(lineNumber - 1).length + 1;
+        editor.session.insert(
+          {
+            row: lineNumber - 1,
+            column: lineLength,
+          },
+          `${" ".repeat(maxLength - lineLength + 4)}/* suspiciousness: ${Number(
+            suspiciousness,
+          ).toFixed(3)} */`,
+        );
+
+        const markerId = editor.session.addMarker(range, className, "fullLine");
+        markerIds.add(markerId);
+        styleElementRef.current.textContent =
+          styleElementRef.current.textContent +
+          `
           .${className} {
             position: absolute;
             background-color: rgba(225, 95, 95, ${Math.tanh(suspiciousness) * 0.9});
             z-index: 20;
           }
         `;
+      }
     }
 
     return () => {
       styleElementRef.current.textContent = "";
       markerIds.forEach((id) => editor.session.removeMarker(id));
     };
-  }, [selectedTechnique, editor, flResult]);
+  }, [selectedTechnique, editor, flResults]);
 
   const onClick = useCallback(
     (technique: string) => {
@@ -106,15 +119,18 @@ function FL({
   return (
     <>
       <div className={styles.techniques}>
-        {Object.keys(flResult).map((technique) => (
-          <Button
-            key={`${technique}-btn`}
-            onClick={() => onClick(technique)}
-            variant={selectedTechnique === technique ? "contained" : "outlined"}
-          >
-            {technique}
-          </Button>
-        ))}
+        {flResults.map((flResult) => {
+          const technique = flResult.technique;
+          return (
+            <Button
+              key={`${technique}-btn`}
+              onClick={() => onClick(technique)}
+              variant={selectedTechnique === technique ? "contained" : "outlined"}
+            >
+              {technique}
+            </Button>
+          );
+        })}
       </div>
       <Editor
         className={styles.flEditor}

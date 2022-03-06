@@ -11,7 +11,7 @@ const useFL = (src: string, test: string) => {
   );
 
   return {
-    flResult: data,
+    flResults: data,
     error: error,
     isLoading: !error && !data,
   };
