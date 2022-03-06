@@ -1,7 +1,7 @@
 package jp.kusumotolab.fldemo.service;
 
-import java.util.Comparator;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import jp.kusumotolab.fldemo.common.FlKind;
@@ -40,7 +40,7 @@ public class KgenprogService {
     for (final var e : FlKind.values()) {
       ret.add(
           new FlResult(
-              e.name(),
+              e,
               e.execFl(initialVariant.getGeneratedSourceCode(), initialVariant.getTestResults())));
     }
     return ret;
