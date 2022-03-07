@@ -7,7 +7,7 @@ import org.junit.Test;
 public class BuggyMyersTriangleTest {
 
   @Test
-  public void testScalene1() {// bug
+  public void testScalene1() { // bug
     final int r = BuggyMyersTriangle.classify(1, 2, 3);
     assertEquals(3, r);
   }
@@ -25,7 +25,7 @@ public class BuggyMyersTriangleTest {
   }
 
   @Test
-  public void testScalene4() {// bug
+  public void testScalene4() { // bug
     final int r = BuggyMyersTriangle.classify(2, 3, 1);
     assertEquals(3, r);
   }
@@ -79,7 +79,7 @@ public class BuggyMyersTriangleTest {
   }
 
   @Test
-  public void testIsoceles6() {// bug
+  public void testIsoceles6() { // bug
     final int r = BuggyMyersTriangle.classify(1, 2, 2);
     assertEquals(2, r);
   }
@@ -97,7 +97,7 @@ public class BuggyMyersTriangleTest {
   }
 
   @Test
-  public void testInvalid3() {// bug
+  public void testInvalid3() { // bug
     final int r = BuggyMyersTriangle.classify(2, 1, 4);
     assertEquals(-1, r);
   }
@@ -145,7 +145,7 @@ public class BuggyMyersTriangleTest {
   }
 
   @Test
-  public void testInvalidNeg2() {// bug
+  public void testInvalidNeg2() { // bug
     final int r = BuggyMyersTriangle.classify(1, -1, 2);
     assertEquals(-1, r);
   }
@@ -175,7 +175,7 @@ public class BuggyMyersTriangleTest {
   }
 
   @Test
-  public void testInvalidNeg7() {// bug
+  public void testInvalidNeg7() { // bug
     final int r = BuggyMyersTriangle.classify(-1, 1, 1);
     assertEquals(-1, r);
   }
@@ -215,5 +215,4 @@ public class BuggyMyersTriangleTest {
     final int r = BuggyMyersTriangle.classify(-1, -1, -1);
     assertEquals(-1, r);
   }
-
 }

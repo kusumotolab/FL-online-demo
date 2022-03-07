@@ -215,5 +215,4 @@ public class MyersTriangleTest {
     final int r = MyersTriangle.classify(-1, -1, -1);
     assertEquals(-1, r);
   }
-
 }
