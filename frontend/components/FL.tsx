@@ -59,7 +59,7 @@ function FL({
 
       for (const {
         lineNumber: _lineNumber,
-        suspiciousness: _suspiciousness,
+        rawSuspiciousness: _suspiciousness,
         normalizedSuspiciousness: _normalizedSuspiciousness,
       } of suspiciousnesses) {
         const lineNumber = Number(_lineNumber);
