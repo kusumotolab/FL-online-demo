@@ -5,13 +5,21 @@ import KGenProg from "../components/KGenProg";
 import styles from "../styles/Home.module.css";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BugReportIcon from "@mui/icons-material/BugReport";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
+import { styled } from "@mui/material/styles";
 import { Ace } from "ace-builds";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useState } from "react";
+
+const HoverableGitHubIcon = styled(GitHubIcon)({
+  "&:hover": {
+    color: "var(--header-contents-color-hovered)",
+  },
+});
 
 const Home: NextPage = () => {
   const [srcEditor, setSrcEditor] = useState<Ace.Editor>();
@@ -108,14 +116,16 @@ const Home: NextPage = () => {
       </Head>
 
       <header id={styles.logo}>
-        <a href="./">
+        <a className={styles.title} href="./">
           {/* <img className={styles.logoImg} src="/logo.png" /> */}
           <h1>FL online demo</h1>
         </a>
+        <span className={styles.icons}>
+          <a href="https://github.com/kusumotolab/FL-online-demo/">
+            <HoverableGitHubIcon htmlColor="var(--header-contents-color)" fontSize="large" />
+          </a>
+        </span>
       </header>
-      <span id={styles.forkongithub}>
-        <a href="https://github.com/kusumotolab/FL-online-demo/">Fork me on GitHub</a>
-      </span>
 
       <main className={styles.main}>
         <div id={styles.ctrl}>

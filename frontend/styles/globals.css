@@ -1,3 +1,8 @@
+:root {
+  --header-contents-color-hovered: #bebfc1;
+  --header-contents-color: #eeeeef;
+}
+
 html {
   font-family: Verdana, sans-serif;
   font-size: 14px;

@@ -16,21 +16,19 @@
 }
 
 #logo {
+  display: flex;
+  align-items: center;
   margin: 0;
   padding: 0.1em 1em;
   background-color: #343440;
   height: 4rem;
 }
 
-#logo:hover {
-  background-color: #61616a;
-}
-
 #logo img {
   width: 60px;
 }
 
-#logo h1 {
+.title h1 {
   display: inline-block;
   height: 100%;
   vertical-align: middle;
@@ -38,12 +36,16 @@
   font-family: arial, sans-serif;
   font-size: x-large;
   font-weight: bold;
-  color: #eeeeef;
+  color: var(--header-contents-color);
 }
 
-#logo a {
-  text-decoration: none;
-  color: #164751;
+.title:hover h1 {
+  color: var(--header-contents-color-hovered);
+}
+
+.icons {
+  margin-right: 1rem;
+  margin-left: auto;
 }
 
 #ctrl {
