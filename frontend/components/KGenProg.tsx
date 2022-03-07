@@ -35,7 +35,10 @@ function KGenProg({
     <Editor
       className={styles.editorConsole}
       headerText="Console"
-      onLoad={(editor) => setConsoleEditor(editor)}
+      onLoad={(editor) => {
+        setConsoleEditor(editor);
+        editor.setShowFoldWidgets(false);
+      }}
       name="console"
       readOnly
       value={kgpConsoleHistory
