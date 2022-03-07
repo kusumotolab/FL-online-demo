@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import jp.kusumotolab.fldemo.common.FlKind;
-import jp.kusumotolab.fldemo.common.SourceUtil;
 import jp.kusumotolab.fldemo.data.FlResult;
 import jp.kusumotolab.fldemo.data.Project;
 import jp.kusumotolab.fldemo.data.SrcAndTests;
@@ -50,11 +49,10 @@ public class KgenprogService {
     initProject(st);
     final Variant initialVariant = createInitialVariant();
     final TestResults testResults = initialVariant.getTestResults();
-    final List<String> testOrder = SourceUtil.inferTestMethodNames(project.test());
 
     return testResults.getExecutedTestFQNs().stream()
         .map(testResults::getTestResult)
-        .map(e -> TestResultWithCoverage.valueOf(e, project.src(), testOrder))
+        .map(e -> TestResultWithCoverage.valueOf(e, project.src(), project.testMethods()))
         .sorted(Comparator.comparing(TestResultWithCoverage::getTestOrder))
         .toList();
   }

@@ -103,4 +103,21 @@ class FlControllerTest {
         .andDo(print())
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  void testNotContainsTest01() throws Exception {
+    final SrcAndTests st =
+        new SrcAndTests.Builder()
+            .srcFromPath("example/NotContainsTest01/src/example/Foo.java")
+            .testFromPath("example/NotContainsTest01/src/example/FooTest.java")
+            .build();
+
+    mockMvc
+        .perform(
+            post("/api/fl/all")
+                .content(objectMapper.writeValueAsString(st))
+                .contentType(MediaType.APPLICATION_JSON))
+        .andDo(print())
+        .andExpect(status().isBadRequest());
+  }
 }
