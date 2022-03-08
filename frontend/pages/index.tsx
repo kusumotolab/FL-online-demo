@@ -2,6 +2,7 @@ import Coverage from "../components/Coverage";
 import Editor from "../components/Editor";
 import FL from "../components/FL";
 import KGenProg from "../components/KGenProg";
+import useForceUpdate from "../hooks/useForceUpdate";
 import styles from "../styles/Home.module.css";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BugReportIcon from "@mui/icons-material/BugReport";
@@ -29,6 +30,7 @@ const Home: NextPage = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [ctrl, setCtrl] = useState<"repair" | "fl" | "test" | null>(null);
+  const forceUpdate = useForceUpdate();
 
   const loadDefaultSrc = useCallback((uri: RequestInfo): ((editor: Ace.Editor) => void) => {
     return (editor: Ace.Editor) => {
@@ -55,16 +57,19 @@ const Home: NextPage = () => {
 
   const onClickRepair = useCallback(() => {
     setCtrl("repair");
+    forceUpdate();
   }, []);
 
   const onClickFL = useCallback(() => {
     setCtrl("fl");
     setIsRunning(true);
+    forceUpdate();
   }, []);
 
   const onClickTest = useCallback(() => {
     setCtrl("test");
     setIsRunning(true);
+    forceUpdate();
   }, []);
 
   const onStartRepair = useCallback(() => {
