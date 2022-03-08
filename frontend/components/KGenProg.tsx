@@ -29,7 +29,7 @@ function KGenProg({
 
   useEffect(() => {
     runKgp(src, test);
-  }, [src, test]);
+  }, [runKgp, src, test]);
 
   return (
     <Editor

@@ -53,43 +53,6 @@ const Home: NextPage = () => {
     setIsError(true);
   }, []);
 
-  const resultElement = useCallback(() => {
-    if (typeof srcEditor === "undefined") return <></>;
-    if (typeof testEditor === "undefined") return <></>;
-    switch (ctrl) {
-      case "repair":
-        return (
-          <KGenProg
-            src={srcEditor.getValue()}
-            test={testEditor.getValue()}
-            onStart={() => setIsRunning(true)}
-            onSuccess={onSuccess}
-            onError={onError}
-          />
-        );
-      case "fl":
-        return (
-          <FL
-            src={srcEditor.getValue()}
-            test={testEditor.getValue()}
-            onSuccess={onSuccess}
-            onError={onError}
-          />
-        );
-      case "test":
-        return (
-          <Coverage
-            src={srcEditor.getValue()}
-            test={testEditor.getValue()}
-            onSuccess={onSuccess}
-            onError={onError}
-          />
-        );
-      default:
-        return <></>;
-    }
-  }, [ctrl, srcEditor, testEditor]);
-
   const onClickRepair = useCallback(() => {
     setCtrl("repair");
   }, []);
@@ -101,6 +64,10 @@ const Home: NextPage = () => {
 
   const onClickTest = useCallback(() => {
     setCtrl("test");
+    setIsRunning(true);
+  }, []);
+
+  const onStartRepair = useCallback(() => {
     setIsRunning(true);
   }, []);
 
@@ -183,7 +150,35 @@ const Home: NextPage = () => {
           />
         </div>
 
-        {resultElement()}
+        {typeof srcEditor === "undefined" ? (
+          <></>
+        ) : typeof testEditor === "undefined" ? (
+          <></>
+        ) : ctrl === "repair" ? (
+          <KGenProg
+            src={srcEditor.getValue()}
+            test={testEditor.getValue()}
+            onStart={onStartRepair}
+            onSuccess={onSuccess}
+            onError={onError}
+          />
+        ) : ctrl === "fl" ? (
+          <FL
+            src={srcEditor.getValue()}
+            test={testEditor.getValue()}
+            onSuccess={onSuccess}
+            onError={onError}
+          />
+        ) : ctrl === "test" ? (
+          <Coverage
+            src={srcEditor.getValue()}
+            test={testEditor.getValue()}
+            onSuccess={onSuccess}
+            onError={onError}
+          />
+        ) : (
+          <></>
+        )}
       </main>
     </div>
   );
