@@ -10,12 +10,12 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useState } from "react";
 
-import Coverage from "../components/Coverage";
-import Editor from "../components/Editor";
-import FL from "../components/FL";
-import KGenProg from "../components/KGenProg";
-import useForceUpdate from "../hooks/useForceUpdate";
-import styles from "../styles/Home.module.css";
+import Coverage from "@/components/Coverage";
+import Editor from "@/components/Editor";
+import FL from "@/components/FL";
+import KGenProg from "@/components/KGenProg";
+import useForceUpdate from "@/hooks/useForceUpdate";
+import styles from "@/styles/Home.module.css";
 
 const HoverableGitHubIcon = styled(GitHubIcon)({
   "&:hover": {

@@ -2,9 +2,9 @@ import { Ace } from "ace-builds";
 import { useEffect, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
-import { useKGenProg } from "../hooks/useKGenProg";
-import styles from "../styles/KGenProg.module.css";
-import Editor from "./Editor";
+import Editor from "@/components/Editor";
+import { useKGenProg } from "@/hooks/useKGenProg";
+import styles from "@/styles/KGenProg.module.css";
 
 function KGenProg({
   src,

@@ -1,8 +1,8 @@
 import { IAceEditorProps } from "react-ace";
 
-import styles from "../styles/Editor.module.css";
 // eslint-disable-next-line import/no-named-default
-import { default as AceEditor } from "./AceEditorWrapper";
+import { default as AceEditor } from "@/components/AceEditorWrapper";
+import styles from "@/styles/Editor.module.css";
 
 function Editor({
   headerText,

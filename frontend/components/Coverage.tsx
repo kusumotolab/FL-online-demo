@@ -6,9 +6,9 @@ import { Ace } from "ace-builds";
 import { useEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
-import { useTests } from "../hooks/useTests";
-import styles from "../styles/Coverage.module.css";
-import Editor from "./Editor";
+import Editor from "@/components/Editor";
+import { useTests } from "@/hooks/useTests";
+import styles from "@/styles/Coverage.module.css";
 
 function Coverage({
   src,

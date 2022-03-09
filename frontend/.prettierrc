@@ -2,7 +2,11 @@
     "printWidth": 100,
     "trailingComma": "all",
     "arrowParens": "always",
-    "importOrder": ["<THIRD_PARTY_MODULES>", "^[./]"],
+    "importOrder": [
+        "<THIRD_PARTY_MODULES>",
+        "^@/(.*)$",
+        "^[./]"
+    ],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true
 }

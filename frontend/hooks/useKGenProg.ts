@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import useWebSocket from "react-use-websocket";
 
-import checkFetchError from "../util/checkFetchError";
+import checkFetchError from "@/util/checkFetchError";
 
 const useKGenProg = ({
   onStart,
