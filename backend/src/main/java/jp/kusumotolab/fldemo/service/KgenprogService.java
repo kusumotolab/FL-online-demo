@@ -18,6 +18,7 @@ import jp.kusumotolab.kgenprog.ga.validation.DefaultCodeValidation;
 import jp.kusumotolab.kgenprog.ga.variant.Variant;
 import jp.kusumotolab.kgenprog.ga.variant.VariantStore;
 import jp.kusumotolab.kgenprog.project.jdt.JDTASTConstruction;
+import jp.kusumotolab.kgenprog.project.test.EmptyTestResults;
 import jp.kusumotolab.kgenprog.project.test.LocalTestExecutor;
 import jp.kusumotolab.kgenprog.project.test.TestResults;
 import lombok.extern.slf4j.Slf4j;
@@ -79,8 +80,12 @@ public class KgenprogService {
     log.info(project.projectDir() + " test results\n" + initialVariant.getTestResults().toString());
 
     if (!initialVariant.isBuildSucceeded()) {
-      log.warn(project.projectDir().toString() + "built failed");
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Build failed");
+      String errMsg = "built failed";
+      if(initialVariant.getTestResults() instanceof EmptyTestResults emptyTestResults){
+        errMsg += ": " + emptyTestResults.getCause();
+      }
+      log.warn(project.projectDir().toString() + errMsg);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errMsg);
     }
 
     return initialVariant;
