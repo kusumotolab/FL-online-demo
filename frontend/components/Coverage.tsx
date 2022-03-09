@@ -1,6 +1,3 @@
-import { useTests } from "../hooks/useTests";
-import styles from "../styles/Coverage.module.css";
-import Editor from "./Editor";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Checkbox from "@mui/material/Checkbox";
@@ -8,6 +5,10 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { Ace } from "ace-builds";
 import { useEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
+
+import { useTests } from "../hooks/useTests";
+import styles from "../styles/Coverage.module.css";
+import Editor from "./Editor";
 
 function Coverage({
   src,
@@ -24,7 +25,7 @@ function Coverage({
 
   const styleElementRef = useRef(document.createElement("style"));
   useEffect(() => {
-    document.getElementsByTagName("head").item(0)!.appendChild(styleElementRef.current);
+    document.getElementsByTagName("head").item(0)?.appendChild(styleElementRef.current);
   }, []);
 
   const red = "rgba(225, 95, 95, 0.5)";
@@ -41,7 +42,7 @@ function Coverage({
     setChecked(
       Object.fromEntries(
         testResults.map((testResult) => {
-          const testMethod = testResult["testMethod"];
+          const { testMethod } = testResult;
           return [testMethod, true];
         }),
       ),
@@ -53,22 +54,22 @@ function Coverage({
     if (typeof editor === "undefined") return;
 
     const coverages = new Map<number, { status: string; failed: boolean }>();
-    for (const testResult of testResults) {
-      const testMethod = testResult["testMethod"];
+    testResults?.forEach((testResult) => {
+      const { testMethod } = testResult;
 
-      if (!checked[testMethod]) continue;
+      if (!checked[testMethod]) return;
 
-      for (const coverage of testResult["coverages"]) {
-        const lineNumber = coverage["lineNumber"];
-        const status = coverage["status"];
+      testResult.coverages.forEach((coverage) => {
+        const { lineNumber } = coverage;
+        const { status } = coverage;
 
-        if (status === "EMPTY") continue;
+        if (status === "EMPTY") return;
 
         if (status === "COVERED" || coverages.get(lineNumber)?.status !== "COVERED") {
-          coverages.set(lineNumber, { status, failed: testResult["failed"] });
+          coverages.set(lineNumber, { status, failed: testResult.failed });
         }
-      }
-    }
+      });
+    });
 
     const markerIds = new Set<number>();
     coverages.forEach(({ status, failed }, lineNumber) => {
@@ -83,24 +84,23 @@ function Coverage({
 
       const markerId = editor.session.addMarker(range, className, "fullLine");
       markerIds.add(markerId);
-      styleElementRef.current.textContent =
-        styleElementRef.current.textContent +
-        `
-            .${className} {
-              position: absolute;
-              background-color: ${status !== "COVERED" ? yellow : failed ? red : green};
-              z-index: 20;
-            }
-          `;
+      styleElementRef.current.textContent += `
+          .${className} {
+            position: absolute;
+            background-color: ${status !== "COVERED" ? yellow : failed ? red : green};
+            z-index: 20;
+          }
+        `;
     });
 
     return () => {
       styleElementRef.current.textContent = "";
       markerIds.forEach((id) => editor.session.removeMarker(id));
     };
-  }, [editor, testResults, checked]);
+  }, [editor, testResults, checked, isLoading]);
 
   if (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
     return (
       <>
@@ -131,28 +131,28 @@ function Coverage({
             <div
               className={styles.colorBox}
               style={{ width: "2em", height: "1em", backgroundColor: red }}
-            ></div>
+            />
             <span className={styles.colorDescription}>covered & test failed</span>
           </div>
           <div className={styles.colorExample}>
             <div
               className={styles.colorBox}
               style={{ width: "2em", height: "1em", backgroundColor: green }}
-            ></div>
+            />
             <span className={styles.colorDescription}>covered & test pass</span>
           </div>
           <div className={styles.colorExample}>
             <div
               className={styles.colorBox}
               style={{ width: "2em", height: "1em", backgroundColor: yellow }}
-            ></div>
+            />
             <span className={styles.colorDescription}>not covered</span>
           </div>
         </div>
       </div>
       <div className={styles.checkboxes}>
         <FormControlLabel
-          label={"すべてのテスト"}
+          label="すべてのテスト"
           control={
             <Checkbox
               checked={Array.from(Object.entries(checked)).every(([_, x]) => x)}
@@ -174,8 +174,8 @@ function Coverage({
         />
         <div className={styles.testMethods}>
           {testResults.map((testResult) => {
-            const testMethod = testResult["testMethod"];
-            const failed = testResult["failed"];
+            const { testMethod } = testResult;
+            const { failed } = testResult;
             return (
               <FormControlLabel
                 className={styles.label}

@@ -1,9 +1,11 @@
 const checkFetchError = async (resp: Response) => {
   if (resp.ok) return resp.json();
-  let error = resp;
+  let error;
   try {
     error = await resp.json();
-  } catch {}
+  } catch {
+    error = resp;
+  }
   throw error;
 };
 

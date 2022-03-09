@@ -1,5 +1,6 @@
-import fetcher from "../util/fetcher";
 import useSWRImmutable from "swr/immutable";
+
+import fetcher from "../util/fetcher";
 
 const useFL = (src: string, test: string) => {
   const { data, error } = useSWRImmutable(
@@ -12,7 +13,7 @@ const useFL = (src: string, test: string) => {
 
   return {
     flResults: data,
-    error: error,
+    error,
     isLoading: !error && !data,
   };
 };

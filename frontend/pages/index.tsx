@@ -1,9 +1,3 @@
-import Coverage from "../components/Coverage";
-import Editor from "../components/Editor";
-import FL from "../components/FL";
-import KGenProg from "../components/KGenProg";
-import useForceUpdate from "../hooks/useForceUpdate";
-import styles from "../styles/Home.module.css";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -15,6 +9,13 @@ import { Ace } from "ace-builds";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useState } from "react";
+
+import Coverage from "../components/Coverage";
+import Editor from "../components/Editor";
+import FL from "../components/FL";
+import KGenProg from "../components/KGenProg";
+import useForceUpdate from "../hooks/useForceUpdate";
+import styles from "../styles/Home.module.css";
 
 const HoverableGitHubIcon = styled(GitHubIcon)({
   "&:hover": {
@@ -32,16 +33,14 @@ const Home: NextPage = () => {
   const [ctrl, setCtrl] = useState<"repair" | "fl" | "test" | null>(null);
   const forceUpdate = useForceUpdate();
 
-  const loadDefaultSrc = useCallback((uri: RequestInfo): ((editor: Ace.Editor) => void) => {
-    return (editor: Ace.Editor) => {
-      fetch(uri)
-        .then((resp) => resp.text())
-        .then((text) => {
-          editor.insert(text);
-          editor.gotoLine(1, 0, false);
-          editor.getSession().getUndoManager().reset();
-        });
-    };
+  const loadDefaultSrc = useCallback((uri: RequestInfo, editor: Ace.Editor) => {
+    void fetch(uri)
+      .then((resp) => resp.text())
+      .then((text) => {
+        editor.insert(text);
+        editor.gotoLine(1, 0, false);
+        editor.getSession().getUndoManager().reset();
+      });
   }, []);
 
   const onSuccess = useCallback(() => {
@@ -58,19 +57,19 @@ const Home: NextPage = () => {
   const onClickRepair = useCallback(() => {
     setCtrl("repair");
     forceUpdate();
-  }, []);
+  }, [forceUpdate]);
 
   const onClickFL = useCallback(() => {
     setCtrl("fl");
     setIsRunning(true);
     forceUpdate();
-  }, []);
+  }, [forceUpdate]);
 
   const onClickTest = useCallback(() => {
     setCtrl("test");
     setIsRunning(true);
     forceUpdate();
-  }, []);
+  }, [forceUpdate]);
 
   const onStartRepair = useCallback(() => {
     setIsRunning(true);
@@ -141,7 +140,7 @@ const Home: NextPage = () => {
             headerText="Source"
             onLoad={(editor) => {
               setSrcEditor(editor);
-              loadDefaultSrc("default-src.java")(editor);
+              loadDefaultSrc("default-src.java", editor);
             }}
             name="src"
           />
@@ -149,16 +148,14 @@ const Home: NextPage = () => {
             headerText="Test"
             onLoad={(editor) => {
               setTestEditor(editor);
-              loadDefaultSrc("default-test.java")(editor);
+              loadDefaultSrc("default-test.java", editor);
             }}
             name="test"
           />
         </div>
 
-        {typeof srcEditor === "undefined" ? (
-          <></>
-        ) : typeof testEditor === "undefined" ? (
-          <></>
+        {typeof srcEditor === "undefined" || typeof testEditor === "undefined" ? (
+          ""
         ) : ctrl === "repair" ? (
           <KGenProg
             src={srcEditor.getValue()}
@@ -182,7 +179,7 @@ const Home: NextPage = () => {
             onError={onError}
           />
         ) : (
-          <></>
+          ""
         )}
       </main>
     </div>

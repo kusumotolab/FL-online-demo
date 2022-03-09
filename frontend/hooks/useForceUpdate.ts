@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 const useForceUpdate = () => {
-  const [_, newState] = useState({});
+  const [, newState] = useState({});
   return useCallback(() => newState({}), []);
 };
 

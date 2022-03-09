@@ -1,9 +1,10 @@
-import { useKGenProg } from "../hooks/useKGenProg";
-import styles from "../styles/KGenProg.module.css";
-import Editor from "./Editor";
 import { Ace } from "ace-builds";
 import { useEffect, useState } from "react";
 import { IAceEditorProps } from "react-ace";
+
+import { useKGenProg } from "../hooks/useKGenProg";
+import styles from "../styles/KGenProg.module.css";
+import Editor from "./Editor";
 
 function KGenProg({
   src,
@@ -15,16 +16,16 @@ function KGenProg({
 }: {
   src: string;
   test: string;
-  onStart?: () => void;
-  onSuccess?: () => void;
-  onError?: () => void;
+  onStart: () => void;
+  onSuccess: (() => void) | undefined;
+  onError: (() => void) | undefined;
 } & IAceEditorProps) {
   const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
 
   const { messageHistory: kgpConsoleHistory, runKgp } = useKGenProg({
-    onStart: onStart,
-    onSuccess: onSuccess,
-    onError: onError,
+    onStart,
+    onSuccess,
+    onError,
   });
 
   useEffect(() => {

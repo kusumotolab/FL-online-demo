@@ -1,6 +1,6 @@
 import { Ace } from "ace-builds";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { IAceEditorProps, IAceOptions } from "react-ace";
 
 const AceEditor = dynamic(
@@ -16,21 +16,27 @@ const AceEditor = dynamic(
 );
 
 function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEditorProps) {
-  const defaultOptions: IAceOptions = {
-    showGutter: true,
-    minLines: 25,
-    maxLines: 25,
-    printMargin: false,
-    useSoftTabs: true,
-    tabSize: 2,
-    fontSize: "1rem",
-    cursorStyle: undefined,
-  };
-  const readonlyOptions: IAceOptions = {
-    readOnly: true,
-    highlightActiveLine: false,
-    highlightGutterLine: false,
-  };
+  const defaultOptions = useMemo(
+    (): IAceOptions => ({
+      showGutter: true,
+      minLines: 25,
+      maxLines: 25,
+      printMargin: false,
+      useSoftTabs: true,
+      tabSize: 2,
+      fontSize: "1rem",
+      cursorStyle: undefined,
+    }),
+    [],
+  );
+  const readonlyOptions: IAceOptions = useMemo(
+    (): IAceOptions => ({
+      readOnly: true,
+      highlightActiveLine: false,
+      highlightGutterLine: false,
+    }),
+    [],
+  );
 
   const [options, setOptions] = useState(defaultOptions);
   useEffect(() => {
@@ -39,15 +45,19 @@ function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEdit
     } else {
       setOptions(defaultOptions);
     }
-  }, [readOnly]);
+  }, [defaultOptions, readOnly, readonlyOptions]);
 
   const switchCursorDisplay = useCallback(
     (editor: Ace.Editor) => {
       if (readOnly) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        // eslint-disable-next-line no-param-reassign
         editor.renderer.$cursorLayer.element.style.display = "none";
       } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        // eslint-disable-next-line no-param-reassign
         editor.renderer.$cursorLayer.element.style.display = "true";
       }
     },

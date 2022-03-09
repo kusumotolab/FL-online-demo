@@ -1,6 +1,7 @@
-import checkFetchError from "../util/checkFetchError";
 import { useCallback, useEffect, useState } from "react";
 import useWebSocket from "react-use-websocket";
+
+import checkFetchError from "../util/checkFetchError";
 
 const useKGenProg = ({
   onStart,
@@ -18,7 +19,7 @@ const useKGenProg = ({
   const { lastMessage } = useWebSocket(socketUrl, {
     onOpen: () => setMessageHistory(defaultMessageHistory),
     onClose: onSuccess,
-    onError: onError,
+    onError,
     retryOnError: false,
   });
 
@@ -32,7 +33,7 @@ const useKGenProg = ({
     (src: string, test: string) => {
       if (typeof onStart !== "undefined") onStart();
 
-      const data = { src: src, test: test };
+      const data = { src, test };
 
       fetch(new URL("./api/submission", process.env.NEXT_PUBLIC_REPAIR_API_ENDPOINT).href, {
         method: "POST",

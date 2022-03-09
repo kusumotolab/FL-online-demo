@@ -6,7 +6,7 @@ const fetcher = (url: RequestInfo, src: string, test: string) =>
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ src: src, test: test }),
+    body: JSON.stringify({ src, test }),
   }).then(checkFetchError);
 
 export default fetcher;
