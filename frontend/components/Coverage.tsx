@@ -3,7 +3,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Ace } from "ace-builds";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
 import Editor from "@/components/Editor";
@@ -22,6 +22,11 @@ function Coverage({
   const [checked, setChecked] = useState({});
 
   const [editor, setEditor] = useState<Ace.Editor>();
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    scrollRef?.current?.scrollIntoView();
+  });
 
   const styleElementRef = useRef(document.createElement("style"));
   useEffect(() => {
@@ -112,7 +117,7 @@ function Coverage({
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={scrollRef}>
       <div className={styles.coverage}>
         <Editor
           className={styles.editor}

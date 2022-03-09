@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { Ace } from "ace-builds";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
 import Editor from "@/components/Editor";
@@ -18,6 +18,11 @@ function FL({
 
   const [editor, setEditor] = useState<Ace.Editor>();
   const [selectedTechnique, setSelectedTechnique] = useState("Ochiai");
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    scrollRef?.current?.scrollIntoView();
+  });
 
   const styleElementRef = useRef(document.createElement("style"));
   useEffect(() => {
@@ -125,7 +130,7 @@ function FL({
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <>
+    <div ref={scrollRef}>
       <div className={styles.techniques}>
         {flResults.map((flResult) => {
           const { technique } = flResult;
@@ -152,7 +157,7 @@ function FL({
         }}
         {...other}
       />
-    </>
+    </div>
   );
 }
 
