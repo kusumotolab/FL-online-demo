@@ -1,218 +1,84 @@
 package com.example;
 
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
+/**
+ * All test cases correspond to Myers's 14 questions.
+ */
 public class MyersTriangleTest {
 
-  @Test
-  public void testScalene1() {
-    final int r = MyersTriangle.classify(1, 2, 3);
-    assertEquals(3, r);
+  @Test public void testScalene1() {
+    int type = MyersTriangle.classify(2, 3, 4); // Q1
+    assertEquals(3, type);
   }
 
-  @Test
-  public void testScalene2() {
-    final int r = MyersTriangle.classify(1, 3, 2);
-    assertEquals(3, r);
+  @Test public void testEquiliteral() {
+    int type = MyersTriangle.classify(1, 1, 1); // Q2
+    assertEquals(1, type);
   }
 
-  @Test
-  public void testScalene3() {
-    final int r = MyersTriangle.classify(2, 1, 3);
-    assertEquals(3, r);
+  @Test public void testIsoscele1() {
+    int type = MyersTriangle.classify(3, 3, 4); // Q3 Q4
+    assertEquals(2, type);
   }
 
-  @Test
-  public void testScalene4() {
-    final int r = MyersTriangle.classify(2, 3, 1);
-    assertEquals(3, r);
+  @Test public void testIsoscele2() {
+    int type = MyersTriangle.classify(3, 4, 3); // Q3 Q4
+    assertEquals(2, type);
   }
 
-  @Test
-  public void testScalene5() {
-    final int r = MyersTriangle.classify(3, 1, 2);
-    assertEquals(3, r);
+  @Test public void testIsoscele3() {
+    int type = MyersTriangle.classify(4, 3, 3); // Q3 Q4
+    assertEquals(2, type);
   }
 
-  @Test
-  public void testScalene6() {
-    final int r = MyersTriangle.classify(3, 2, 1);
-    assertEquals(3, r);
+  @Test public void testInvalid1() {
+    int type = MyersTriangle.classify(0, 1, 1); // Q5
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testEquiliteral() {
-    final int r = MyersTriangle.classify(1, 1, 1);
-    assertEquals(1, r);
+  @Test public void testInvalid2() {
+    int type = MyersTriangle.classify(-1, 1, 1); // Q6
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testIsoceles1() {
-    final int r = MyersTriangle.classify(2, 2, 3);
-    assertEquals(2, r);
+  @Test public void testInvalid3() {
+    int type = MyersTriangle.classify(1, 2, 3); // Q7 Q8
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testIsoceles2() {
-    final int r = MyersTriangle.classify(2, 3, 2);
-    assertEquals(2, r);
+  @Test public void testInvalid4() {
+    int type = MyersTriangle.classify(1, 3, 2); // Q7 Q8
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testIsoceles3() {
-    final int r = MyersTriangle.classify(3, 2, 2);
-    assertEquals(2, r);
+  @Test public void testInvalid5() {
+    int type = MyersTriangle.classify(3, 1, 2); // Q7 Q8
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testIsoceles4() {
-    final int r = MyersTriangle.classify(2, 2, 1);
-    assertEquals(2, r);
+  @Test public void testInvalid6() {
+    int type = MyersTriangle.classify(1, 2, 4); // Q9 Q10
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testIsoceles5() {
-    final int r = MyersTriangle.classify(2, 1, 2);
-    assertEquals(2, r);
+  @Test public void testInvalid7() {
+    int type = MyersTriangle.classify(1, 4, 2); // Q9 Q10
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testIsoceles6() {
-    final int r = MyersTriangle.classify(1, 2, 2);
-    assertEquals(2, r);
+  @Test public void testInvalid8() {
+    int type = MyersTriangle.classify(4, 1, 2); // Q9 Q10
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testInvalid1() {
-    final int r = MyersTriangle.classify(1, 2, 4);
-    assertEquals(-1, r);
+  @Test public void testInvalid9() {
+    int type = MyersTriangle.classify(0, 0, 0); // Q11
+    assertEquals(-1, type);
   }
 
-  @Test
-  public void testInvalid2() {
-    final int r = MyersTriangle.classify(1, 4, 2);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalid3() {
-    final int r = MyersTriangle.classify(2, 1, 4);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalid4() {
-    final int r = MyersTriangle.classify(2, 4, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalid5() {
-    final int r = MyersTriangle.classify(4, 1, 2);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalid6() {
-    final int r = MyersTriangle.classify(4, 2, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalid7() {
-    final int r = MyersTriangle.classify(3, 1, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalid8() {
-    final int r = MyersTriangle.classify(1, 3, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalid9() {
-    final int r = MyersTriangle.classify(1, 1, 3);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg1() {
-    final int r = MyersTriangle.classify(-1, 1, 2);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg2() {
-    final int r = MyersTriangle.classify(1, -1, 2);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg3() {
-    final int r = MyersTriangle.classify(1, 2, -1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg4() {
-    final int r = MyersTriangle.classify(-1, 2, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg5() {
-    final int r = MyersTriangle.classify(2, -1, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg6() {
-    final int r = MyersTriangle.classify(2, 1, -1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg7() {
-    final int r = MyersTriangle.classify(-1, 1, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg8() {
-    final int r = MyersTriangle.classify(1, -1, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg9() {
-    final int r = MyersTriangle.classify(1, 1, -1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg10() {
-    final int r = MyersTriangle.classify(-1, -1, 1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg11() {
-    final int r = MyersTriangle.classify(1, -1, -1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg12() {
-    final int r = MyersTriangle.classify(-1, 1, -1);
-    assertEquals(-1, r);
-  }
-
-  @Test
-  public void testInvalidNeg13() {
-    final int r = MyersTriangle.classify(-1, -1, -1);
-    assertEquals(-1, r);
-  }
+  // Q12, float checking, cannot be executed on typed language.
+  // Q13, short args, also cannot be executed on java.
+  // Ofc, Q14 is considered on all the above test cases.
 }

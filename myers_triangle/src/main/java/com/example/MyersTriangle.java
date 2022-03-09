@@ -1,87 +1,47 @@
 package com.example;
 
 public class MyersTriangle {
+  /**
+   * Classify triangle type as follows.
+   *  1: Equilateral
+   *  2: Isoscele
+   *  3: Scalene
+   * -1: Invalid
+   *
+   * The following code contains 2 bugs.
+   */
+  public static int classify(int a, int b, int c) {
+    if (a <= 0 || b <= 0 || c <= 0) {
+      return -1;
+    }
 
-  public static int classify(final int a, final int b, final int c) {
-    if (a == b && b == c && c == a) {
-      if (a <= 0) {
-        return -1;
-      }
+    if (a == b && b == c) {
       return 1;
     }
-    if (a < b && b == c) {
-      if (a <= 0) {
-        return -1;
+
+    if (a == b) {
+      if (a + b > c) {
+        return 2;
       }
-      return 2;
+      return -1;
     }
-    if (b == c && c < a) {
-      if (b + c < a) {
-        return -1;
+    if (a == c) {
+      if (a + c > b) {
+        return 99; // should be; return 2
       }
-      return 2;
+      return -1;
     }
-    if (b < c && c == a) {
-      if (b <= 0) {
-        return -1;
+    if (b == c) {
+      if (b + c > a) {
+        return 2;
       }
-      return 2;
+      return -1;
     }
-    if (c == a && a < b) {
-      if (c + a < b) {
-        return -1;
-      }
-      return 2;
-    }
-    if (c < a && a == b) {
-      if (c <= 0) {
-        return -1;
-      }
-      return 2;
-    }
-    if (a == b && b < c) {
-      if (a + b < c) {
-        return -1;
-      }
-      return 2;
-    }
-    if (a < b && b < c) {
-      if (a + b < c) {
-        return -1;
-      }
-      return 3;
-    }
-    if (a < c && c < b) {
-      if (a + c < b) {
-        return -1;
-      }
-      return 3;
-    }
-    if (b < a && a < c) {
-      if (b + a < c) {
-        return -1;
-      }
-      return 3;
-    }
-    if (b < c && c < a) {
-      if (b + c < a) {
-        return -1;
-      }
-      return 3;
-    }
-    if (c < a && a < b) {
-      if (c + a < b) {
-        return -1;
-      }
-      return 3;
-    }
-    if (c < b && b < a) {
-      if (c + b < a) {
-        return -1;
-      }
+
+    if (a < b + c && b < a + c && c < a + b) {
       return 3;
     }
 
-    return 0;
+    return 99; // should be; return -1
   }
 }
