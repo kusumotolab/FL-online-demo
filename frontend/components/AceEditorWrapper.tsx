@@ -52,12 +52,12 @@ function AceEditorWrapper({ name, readOnly = false, onLoad, ...other }: IAceEdit
       if (readOnly) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        // eslint-disable-next-line no-param-reassign
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, no-param-reassign
         editor.renderer.$cursorLayer.element.style.display = "none";
       } else {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        // eslint-disable-next-line no-param-reassign
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, no-param-reassign
         editor.renderer.$cursorLayer.element.style.display = "true";
       }
     },

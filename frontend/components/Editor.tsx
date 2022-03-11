@@ -12,7 +12,7 @@ function Editor({
   ...other
 }: { headerText: string } & IAceEditorProps) {
   return (
-    <div className={`${styles.editor} ${className}`}>
+    <div className={`${styles.editor} ${className ?? ""}`}>
       <div className={styles.header}>{headerText}</div>
       <AceEditor
         className={styles.ace}
