@@ -53,10 +53,6 @@ function KGenProg({
           .map((message) => JSON.parse(message.data))
           .filter((json) => json && json.stdout)
           .map((json) => json.stdout as string)
-          .map((stdout) => {
-            console.log(stdout);
-            return stdout;
-          })
           .join("")}
         onInput={() => {
           if (typeof consoleEditor !== "undefined") {
