@@ -8,12 +8,21 @@ function Editor({
   headerText,
   className,
   name,
+  onLoad,
   ...other
 }: { headerText: string } & IAceEditorProps) {
   return (
     <div className={`${styles.editor} ${className}`}>
       <div className={styles.header}>{headerText}</div>
-      <AceEditor className={styles.ace} name={name} {...other} />
+      <AceEditor
+        className={styles.ace}
+        name={name}
+        onLoad={(editor) => {
+          document.addEventListener("mouseup", () => editor.resize());
+          if (typeof onLoad !== "undefined") onLoad(editor);
+        }}
+        {...other}
+      />
     </div>
   );
 }
