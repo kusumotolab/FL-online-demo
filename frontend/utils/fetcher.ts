@@ -1,4 +1,4 @@
-import checkFetchError from "@/util/checkFetchError";
+import checkFetchError from "@/utils/checkFetchError";
 
 const fetcher = (url: RequestInfo, src: string, test: string) =>
   fetch(url, {

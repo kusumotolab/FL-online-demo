@@ -1,6 +1,6 @@
 import useSWRImmutable from "swr/immutable";
 
-import fetcher from "@/util/fetcher";
+import fetcher from "@/utils/fetcher";
 
 const useFL = (src: string, test: string) => {
   const { data, error } = useSWRImmutable(
