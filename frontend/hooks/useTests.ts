@@ -1,4 +1,3 @@
-import { Key } from "swr";
 import useSWRImmutable from "swr/immutable";
 
 import { components } from "@/schemas/backend";
