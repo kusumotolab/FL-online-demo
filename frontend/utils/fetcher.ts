@@ -1,6 +1,7 @@
+import { components } from "@/schemas/backend";
 import checkFetchError from "@/utils/checkFetchError";
 
-const fetcher = (url: RequestInfo, src: string, test: string) =>
+const fetcher = (url: RequestInfo, { src, test }: components["schemas"]["SrcAndTests"]) =>
   fetch(url, {
     method: "POST",
     headers: {

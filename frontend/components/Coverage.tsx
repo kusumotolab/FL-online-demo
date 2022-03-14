@@ -19,7 +19,7 @@ function Coverage({
 }: { src: string; test: string; onSuccess?: () => void; onError?: () => void } & IAceEditorProps) {
   const { testResults, error, isLoading } = useTests(src, test);
 
-  const [checked, setChecked] = useState({});
+  const [checked, setChecked] = useState(new Map<string, boolean>());
 
   const [editor, setEditor] = useState<Ace.Editor>();
 
@@ -45,33 +45,34 @@ function Coverage({
   useEffect(() => {
     if (typeof testResults === "undefined") return;
     setChecked(
-      Object.fromEntries(
-        testResults.map((testResult) => {
-          const { testMethod } = testResult;
-          return [testMethod, true];
-        }),
+      new Map(
+        testResults
+          .map(({ testMethod }) => testMethod)
+          .filter((testMethod) => typeof testMethod !== "undefined")
+          .map((testMethod) => [testMethod!, true]),
       ),
     );
   }, [testResults]);
 
   useEffect(() => {
-    if (isLoading) return;
-    if (typeof editor === "undefined") return;
+    if (isLoading) return undefined;
+    if (typeof editor === "undefined") return undefined;
 
     const coverages = new Map<number, { status: string; failed: boolean }>();
     testResults?.forEach((testResult) => {
       const { testMethod } = testResult;
 
-      if (!checked[testMethod]) return;
+      if (typeof testMethod === "undefined") return;
+      if (!checked.get(testMethod)) return;
 
-      testResult.coverages.forEach((coverage) => {
+      testResult.coverages?.forEach((coverage) => {
         const { lineNumber } = coverage;
         const { status } = coverage;
 
         if (status === "EMPTY") return;
 
         if (status === "COVERED" || coverages.get(lineNumber)?.status !== "COVERED") {
-          coverages.set(lineNumber, { status, failed: testResult.failed });
+          coverages.set(lineNumber, { status, failed: testResult.failed || false });
         }
       });
     });
@@ -98,8 +99,10 @@ function Coverage({
         `;
     });
 
+    const styleElement = styleElementRef.current;
+
     return () => {
-      styleElementRef.current.textContent = "";
+      styleElement.textContent = "";
       markerIds.forEach((id) => editor.session.removeMarker(id));
     };
   }, [editor, testResults, checked, isLoading]);
@@ -125,9 +128,9 @@ function Coverage({
           name="coverage"
           readOnly
           value={src}
-          onLoad={(editor) => {
-            setEditor(editor);
-            editor.setShowFoldWidgets(false);
+          onLoad={(coverageEditor) => {
+            setEditor(coverageEditor);
+            coverageEditor.setShowFoldWidgets(false);
           }}
           {...other}
         />
@@ -160,26 +163,29 @@ function Coverage({
           label="すべてのテスト"
           control={
             <Checkbox
-              checked={Array.from(Object.entries(checked)).every(([_, x]) => x)}
+              checked={Array.from(checked.values()).every((x) => x)}
               indeterminate={
-                Array.from(Object.entries(checked)).some(([_, x]) => x) &&
-                !Array.from(Object.entries(checked)).every(([_, x]) => x)
+                Array.from(checked.values()).some((x) => x) &&
+                !Array.from(checked.values()).every((x) => x)
               }
               onChange={(event) => {
-                setChecked((prev) =>
-                  Object.fromEntries(
-                    Object.entries(prev).map(([testMethod, _]) => {
-                      return [testMethod, event.target.checked];
-                    }),
-                  ),
+                setChecked(
+                  (prev) =>
+                    new Map(
+                      Array.from(prev.keys()).map((testMethod) => {
+                        return [testMethod, event.target.checked];
+                      }),
+                    ),
                 );
               }}
             />
           }
         />
         <div className={styles.testMethods}>
-          {testResults.map((testResult) => {
+          {testResults?.map((testResult) => {
             const { testMethod } = testResult;
+            if (typeof testMethod === "undefined") return "";
+
             const { failed } = testResult;
             return (
               <FormControlLabel
@@ -197,10 +203,10 @@ function Coverage({
                 }
                 control={
                   <Checkbox
-                    checked={checked[testMethod] || false}
+                    checked={!!checked.get(testMethod)}
                     onChange={(event) =>
                       setChecked((prev) => {
-                        return { ...prev, [event.target.name]: event.target.checked };
+                        return new Map(prev).set(event.target.name, event.target.checked);
                       })
                     }
                     name={testMethod}

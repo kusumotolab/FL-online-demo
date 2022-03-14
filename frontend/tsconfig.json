@@ -19,6 +19,7 @@
       "@/components/*": ["./components/*"],
       "@/hooks/*": ["./hooks/*"],
       "@/pages/*": ["./pages/*"],
+      "@/schemas/*": ["./schemas/*"],
       "@/styles/*": ["./styles/*"],
       "@/utils/*": ["./utils/*"],
     },

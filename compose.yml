@@ -15,12 +15,23 @@ services:
         target: /frontend/public/default-test.java
         read_only: true
     restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
   backend:
     build:
       context: ./backend/
     working_dir: /backend/
     image: fl-online-demo-backend
+    volumes:
+      - type: bind
+        source: ./util/HealthCheck.java
+        target: /HealthCheck.java
+        read_only: true
     restart: always
+    healthcheck:
+      test: ["CMD", "java", "/HealthCheck.java", "||", "exit", "1"]
+      start_period: 30s
   kdemo:
     build: https://github.com/kusumotolab/kGenProg-online-demo.git#8d8ceb60d344acc86515b4863ce69ef00e699ae6
     restart: always
@@ -34,3 +45,6 @@ services:
     restart: always
     ports:
       - 3000:80
+    depends_on:
+      - backend
+      - frontend

@@ -5,6 +5,7 @@ import { IAceEditorProps } from "react-ace";
 
 import Editor from "@/components/Editor";
 import { useFL } from "@/hooks/useFL";
+import { components } from "@/schemas/backend";
 import styles from "@/styles/FL.module.css";
 
 function FL({
@@ -35,8 +36,8 @@ function FL({
   });
 
   useEffect(() => {
-    if (isLoading) return;
-    if (typeof editor === "undefined") return;
+    if (isLoading) return undefined;
+    if (typeof editor === "undefined") return undefined;
 
     const markerIds = new Set<number>();
 
@@ -53,15 +54,23 @@ function FL({
       .forEach((flResult) => {
         // flResult を lineNumber をキーとして groupBy して
         // lineNumber ごとに suspiciousness の値が最大のものを抽出
+        type Suspiciousness = components["schemas"]["Suspiciousness"];
         const suspiciousnesses = Object.entries(
-          flResult.suspiciousnesses.reduce((obj, result) => {
+          flResult?.suspiciousnesses!.reduce<{
+            [key: Exclude<Suspiciousness["lineNumber"], undefined>]: Suspiciousness[];
+          }>((obj, result) => {
+            if (typeof result.lineNumber === "undefined") return obj;
             obj[result.lineNumber] ??= [];
             obj[result.lineNumber].push(result);
             return obj;
           }, {}),
         )
           .map(([key, value]) => ({ key, value }))
-          .map((o) => o.value.reduce((a, b) => (a.suspiciousness > b.suspiciousness ? a : b)));
+          .map((o) =>
+            o.value.reduce((a, b) =>
+              Number(a.rawSuspiciousness) > Number(b.rawSuspiciousness) ? a : b,
+            ),
+          );
 
         suspiciousnesses.forEach(
           ({
@@ -104,8 +113,10 @@ function FL({
         );
       });
 
+    const styleElement = styleElementRef.current;
+
     return () => {
-      styleElementRef.current.textContent = "";
+      styleElement.textContent = "";
       markerIds.forEach((id) => editor.session.removeMarker(id));
     };
   }, [selectedTechnique, editor, flResults, isLoading]);
@@ -132,12 +143,15 @@ function FL({
   return (
     <div ref={scrollRef}>
       <div className={styles.techniques}>
-        {flResults.map((flResult) => {
+        {flResults?.map((flResult) => {
           const { technique } = flResult;
+          if (typeof technique === "undefined") return "";
           return (
             <Button
               key={`${technique}-btn`}
-              onClick={() => onClick(technique)}
+              onClick={() => {
+                if (typeof technique !== "undefined") onClick(technique);
+              }}
               variant={selectedTechnique === technique ? "contained" : "outlined"}
             >
               {technique}

@@ -6,7 +6,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json,css}'"
+    "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json,css}'",
+    "schemas": "run-p schemas:*",
+    "schemas:backend": "mkdir -p ./schemas ; openapi-typescript http://backend:8080/v3/api-docs --immutable-types >| ./schemas/backend.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.8.1",
