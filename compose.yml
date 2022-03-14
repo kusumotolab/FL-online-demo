@@ -7,11 +7,11 @@ services:
     image: fl-online-demo-frontend
     volumes:
       - type: bind
-        source: ./myers_triangle/src/main/java/com/example/MyersTriangle.java
+        source: ./myers_triangle/src/main/java/com/example/Triangle.java
         target: /frontend/public/default-src.java
         read_only: true
       - type: bind
-        source: ./myers_triangle/src/test/java/com/example/MyersTriangleTest.java
+        source: ./myers_triangle/src/test/java/com/example/TriangleTest.java
         target: /frontend/public/default-test.java
         read_only: true
     restart: always

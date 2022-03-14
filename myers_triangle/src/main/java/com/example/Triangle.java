@@ -1,6 +1,6 @@
 package com.example;
 
-public class MyersTriangle {
+public class Triangle {
   /**
    * Classify triangle type as follows.
    *  1: Equilateral
