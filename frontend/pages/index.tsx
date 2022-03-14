@@ -16,6 +16,7 @@ import FL from "@/components/FL";
 import KGenProg from "@/components/KGenProg";
 import useForceUpdate from "@/hooks/useForceUpdate";
 import styles from "@/styles/Home.module.css";
+import * as LocalStorage from "@/utils/LocalStorage";
 
 const HoverableGitHubIcon = styled(GitHubIcon)({
   "&:hover": {
@@ -33,14 +34,16 @@ const Home: NextPage = () => {
   const [ctrl, setCtrl] = useState<"repair" | "fl" | "test" | null>(null);
   const forceUpdate = useForceUpdate();
 
+  const setText = useCallback((text: string, editor: Ace.Editor) => {
+    editor.insert(text);
+    editor.gotoLine(1, 0, false);
+    editor.getSession().getUndoManager().reset();
+  }, []);
+
   const loadDefaultSrc = useCallback((uri: RequestInfo, editor: Ace.Editor) => {
     void fetch(uri)
       .then((resp) => resp.text())
-      .then((text) => {
-        editor.insert(text);
-        editor.gotoLine(1, 0, false);
-        editor.getSession().getUndoManager().reset();
-      });
+      .then((text) => setText(text, editor));
   }, []);
 
   const onSuccess = useCallback(() => {
@@ -87,7 +90,14 @@ const Home: NextPage = () => {
       </Head>
 
       <header id={styles.logo}>
-        <a className={styles.title} href="./">
+        <a
+          className={styles.title}
+          href="./"
+          onClick={() => {
+            LocalStorage.removeItem(LocalStorage.KEY.SRC);
+            LocalStorage.removeItem(LocalStorage.KEY.TEST);
+          }}
+        >
           {/* <img className={styles.logoImg} src="/logo.png" /> */}
           <h1>FL online demo</h1>
         </a>
@@ -140,7 +150,17 @@ const Home: NextPage = () => {
             headerText="Source"
             onLoad={(editor) => {
               setSrcEditor(editor);
-              loadDefaultSrc("default-src.java", editor);
+
+              const cache = LocalStorage.getItem(LocalStorage.KEY.SRC);
+              if (cache === null) {
+                loadDefaultSrc("default-src.java", editor);
+              } else {
+                setText(cache, editor);
+              }
+            }}
+            onChange={(value) => {
+              LocalStorage.setItem(LocalStorage.KEY.SRC, value);
+              console.log(value);
             }}
             name="src"
           />
@@ -148,7 +168,17 @@ const Home: NextPage = () => {
             headerText="Test"
             onLoad={(editor) => {
               setTestEditor(editor);
-              loadDefaultSrc("default-test.java", editor);
+
+              const cache = LocalStorage.getItem(LocalStorage.KEY.TEST);
+              if (cache === null) {
+                loadDefaultSrc("default-test.java", editor);
+              } else {
+                setText(cache, editor);
+              }
+            }}
+            onChange={(value) => {
+              LocalStorage.setItem(LocalStorage.KEY.TEST, value);
+              console.log(value);
             }}
             name="test"
           />
