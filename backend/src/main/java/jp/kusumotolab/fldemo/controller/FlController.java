@@ -1,6 +1,9 @@
 package jp.kusumotolab.fldemo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,8 +33,17 @@ public class FlController {
   @Operation(summary = "Exec FaultLocalization")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "200", description = "Succeeded"),
-        @ApiResponse(responseCode = "400", description = "Validation Error")
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = FlResult.class)))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Validation Error",
+            content = @Content(mediaType = "application/json", schema = @Schema(hidden = true)))
       })
   @PostMapping("all")
   public List<FlResult> flAll(@Validated @RequestBody SrcAndTests st) {
@@ -41,7 +53,16 @@ public class FlController {
   @Operation(
       summary = "List FaultLocalization Technics",
       description = "List of all available faultLocalization technics")
-  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Succeeded")})
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = FlKind.class))))
+      })
   @GetMapping("technics")
   public List<FlKind> technics() {
     return Arrays.asList(FlKind.values());

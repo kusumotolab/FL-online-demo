@@ -1,5 +1,6 @@
 package jp.kusumotolab.fldemo.common;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import jp.kusumotolab.kgenprog.fl.Ample;
 import jp.kusumotolab.kgenprog.fl.DStar;
@@ -13,6 +14,7 @@ import jp.kusumotolab.kgenprog.ga.variant.Variant;
 import jp.kusumotolab.kgenprog.project.GeneratedSourceCode;
 import jp.kusumotolab.kgenprog.project.test.TestResults;
 
+@Schema(enumAsRef = true)
 public enum FlKind {
   Ample() {
     @Override
