@@ -160,7 +160,6 @@ const Home: NextPage = () => {
             }}
             onChange={(value) => {
               LocalStorage.setItem(LocalStorage.KEY.SRC, value);
-              console.log(value);
             }}
             name="src"
           />
@@ -178,7 +177,6 @@ const Home: NextPage = () => {
             }}
             onChange={(value) => {
               LocalStorage.setItem(LocalStorage.KEY.TEST, value);
-              console.log(value);
             }}
             name="test"
           />
