@@ -4,7 +4,7 @@ import fetcher from "@/utils/fetcher";
 
 const useFL = (src: string, test: string) => {
   const { data, error } = useSWRImmutable(
-    [new URL(`./api/fl/all`, process.env.NEXT_PUBLIC_FL_API_ENDPOINT).href, src, test],
+    [new URL(`./api/fl/all`, `http://${window.location.host}/backend/`).href, src, test],
     fetcher,
     {
       shouldRetryOnError: false,

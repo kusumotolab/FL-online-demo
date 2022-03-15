@@ -35,7 +35,7 @@ const useKGenProg = ({
 
       const data = { src, test };
 
-      fetch(new URL("./api/submission", process.env.NEXT_PUBLIC_REPAIR_API_ENDPOINT).href, {
+      fetch(new URL("./api/submission", `http://${window.location.host}/kdemo/`).href, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const useKGenProg = ({
       })
         .then(checkFetchError)
         .then((text) =>
-          setSocketUrl(new URL(`./${text.key}`, process.env.NEXT_PUBLIC_REPAIR_WS_ENDPOINT).href),
+          setSocketUrl(new URL(`./${text.key}`, `ws://${window.location.host}/kdemo/`).href),
         )
         .catch(onError);
     },

@@ -4,7 +4,7 @@ import fetcher from "@/utils/fetcher";
 
 const useTests = (src: string, test: string) => {
   const { data, error } = useSWRImmutable(
-    [new URL(`./api/test`, process.env.NEXT_PUBLIC_TEST_API_ENDPOINT).href, src, test],
+    [new URL(`./api/test`, `http://${window.location.host}/backend/`).href, src, test],
     fetcher,
     {
       shouldRetryOnError: false,
