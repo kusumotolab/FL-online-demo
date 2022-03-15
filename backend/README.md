@@ -15,8 +15,8 @@
 java -jar backend/build/libs/fldemo-*-all.jar
 ```
 
-## swagger UI
-プログラム起動後にwebブラウザで
+## Swagger UI
+プログラム起動後にWebブラウザで
 http://localhost:8080/swagger-ui/index.html
 にアクセス
 
