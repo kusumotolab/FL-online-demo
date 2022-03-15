@@ -9,6 +9,7 @@ import jp.kusumotolab.kgenprog.fl.Ochiai;
 import jp.kusumotolab.kgenprog.fl.Suspiciousness;
 import jp.kusumotolab.kgenprog.fl.Tarantula;
 import jp.kusumotolab.kgenprog.fl.Zoltar;
+import jp.kusumotolab.kgenprog.ga.variant.Variant;
 import jp.kusumotolab.kgenprog.project.GeneratedSourceCode;
 import jp.kusumotolab.kgenprog.project.test.TestResults;
 
@@ -81,6 +82,10 @@ public enum FlKind {
   };
 
   public abstract FaultLocalization getFl();
+
+  public List<Suspiciousness> execFl(final Variant variant) {
+    return execFl(variant.getGeneratedSourceCode(), variant.getTestResults());
+  }
 
   public List<Suspiciousness> execFl(final GeneratedSourceCode src, final TestResults results) {
     return getFl().exec(src, results);

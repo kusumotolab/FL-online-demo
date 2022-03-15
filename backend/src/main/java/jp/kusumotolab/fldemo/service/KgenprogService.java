@@ -1,6 +1,6 @@
 package jp.kusumotolab.fldemo.service;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -36,14 +36,9 @@ public class KgenprogService {
     initProject(st);
     final Variant initialVariant = createInitialVariant();
 
-    final List<FlResult> ret = new ArrayList<>();
-    for (final var e : FlKind.values()) {
-      ret.add(
-          new FlResult(
-              e,
-              e.execFl(initialVariant.getGeneratedSourceCode(), initialVariant.getTestResults())));
-    }
-    return ret;
+    return Arrays.stream(FlKind.values())
+        .map(fl -> new FlResult(fl, fl.execFl(initialVariant)))
+        .toList();
   }
 
   public List<TestResultWithCoverage> execTests(final SrcAndTests st) {
@@ -54,7 +49,7 @@ public class KgenprogService {
     return testResults.getExecutedTestFQNs().stream()
         .map(testResults::getTestResult)
         .map(e -> TestResultWithCoverage.valueOf(e, project.src(), project.testMethods()))
-        .sorted(Comparator.comparing(TestResultWithCoverage::getTestOrder))
+        .sorted(Comparator.comparing(TestResultWithCoverage::testOrder))
         .toList();
   }
 
