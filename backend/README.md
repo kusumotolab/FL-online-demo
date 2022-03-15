@@ -14,3 +14,13 @@
 ./gradlew shadowJar
 java -jar backend/build/libs/fldemo-*-all.jar
 ```
+
+## swagger UI
+プログラム起動後にwebブラウザで
+http://localhost:8080/swagger-ui/index.html
+にアクセス
+
+## OpenAPI Speficificationの確認方法
+```shell
+curl http://localhost:8080/v3/api-docs
+```
