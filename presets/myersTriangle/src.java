@@ -1,4 +1,4 @@
-package com.example;
+package example;
 
 public class Triangle {
   /**
