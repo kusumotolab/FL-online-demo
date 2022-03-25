@@ -23,6 +23,7 @@ module.exports = {
     "prettier",
   ],
   rules: {
+    "@typescript-eslint/strict-boolean-expressions": "error",
     "arrow-body-style": "off",
     "import/prefer-default-export": "off",
     "import/extensions": [
@@ -35,7 +36,7 @@ module.exports = {
       },
     ],
     "react/function-component-definition": [
-      2,
+      "error",
       { namedComponents: ["function-declaration", "arrow-function"] },
     ],
     "react/jsx-filename-extension": [
