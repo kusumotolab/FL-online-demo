@@ -8,6 +8,7 @@ import { styled } from "@mui/material/styles";
 import { Ace } from "ace-builds";
 import type { NextPage } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import { useCallback, useState } from "react";
 
 import Coverage from "@/components/Coverage";
@@ -40,11 +41,14 @@ const Home: NextPage = () => {
     editor.getSession().getUndoManager().reset();
   }, []);
 
-  const loadDefaultSrc = useCallback((uri: RequestInfo, editor: Ace.Editor) => {
-    void fetch(uri)
-      .then((resp) => resp.text())
-      .then((text) => setText(text, editor));
-  }, []);
+  const loadDefaultSrc = useCallback(
+    (uri: RequestInfo, editor: Ace.Editor) => {
+      void fetch(uri)
+        .then((resp) => resp.text())
+        .then((text) => setText(text, editor));
+    },
+    [setText],
+  );
 
   const onSuccess = useCallback(() => {
     setIsRunning(false);
@@ -90,6 +94,9 @@ const Home: NextPage = () => {
       </Head>
 
       <header id={styles.logo}>
+        <div style={{ position: "relative", width: "4rem", height: "90%" }}>
+          <Image src="/logo.png" layout="fill" objectFit="contain" alt="logo" />
+        </div>
         <a
           className={styles.title}
           href="./"
@@ -98,7 +105,6 @@ const Home: NextPage = () => {
             LocalStorage.removeItem(LocalStorage.KEY.TEST);
           }}
         >
-          {/* <img className={styles.logoImg} src="/logo.png" /> */}
           <h1>FL online demo</h1>
         </a>
         <span className={styles.icons}>
