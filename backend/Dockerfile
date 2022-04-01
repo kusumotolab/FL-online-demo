@@ -1,5 +1,6 @@
 FROM openjdk:17-slim AS base
 
+#for compose.override
 FROM base AS dev
 
 FROM base AS builder
@@ -11,7 +12,7 @@ COPY *.gradle gradlew /backend/
 COPY gradle/ /backend/gradle/
 RUN ./gradlew build -x test --parallel --continue > /dev/null 2>&1 || true
 
-# build gtc
+# make fatjar
 COPY lib/ /backend/lib/
 COPY src/ /backend/src/
 RUN ./gradlew shadowJar
