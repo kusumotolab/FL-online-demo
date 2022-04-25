@@ -8,12 +8,12 @@ import { styled } from "@mui/material/styles";
 import { Ace } from "ace-builds";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useCallback, useState } from "react";
 
 import Coverage from "@/components/Coverage";
 import Editor from "@/components/Editor";
 import FL from "@/components/FL";
+import Image from "@/components/Image";
 import KGenProg from "@/components/KGenProg";
 import useForceUpdate from "@/hooks/useForceUpdate";
 import styles from "@/styles/Home.module.css";
@@ -90,12 +90,12 @@ const Home: NextPage = () => {
     <div className={styles.container}>
       <Head>
         <title>FL online demo</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="data:image/x-icon;," />
       </Head>
 
       <header id={styles.logo}>
         <div style={{ position: "relative", width: "4rem", height: "90%" }}>
-          <Image src="/logo.png" layout="fill" objectFit="contain" alt="logo" />
+          <Image src="./logo.png" layout="fill" objectFit="contain" alt="logo" />
         </div>
         <a
           className={styles.title}
