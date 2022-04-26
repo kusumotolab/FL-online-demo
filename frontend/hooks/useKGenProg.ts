@@ -35,16 +35,29 @@ const useKGenProg = ({
 
       const data = { src, test };
 
-      fetch(new URL("./api/submission", `http://${window.location.host}/kdemo/`).href, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      fetch(
+        new URL(
+          "./api/submission",
+          `${window.location.protocol}//${window.location.host}${window.location.pathname}/kdemo/`,
+        ).href,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      })
+      )
         .then(checkFetchError)
         .then((text) =>
-          setSocketUrl(new URL(`./${text.key}`, `ws://${window.location.host}/kdemo/`).href),
+          setSocketUrl(
+            new URL(
+              `./${text.key}`,
+              `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}${
+                window.location.pathname
+              }/kdemo/`,
+            ).href,
+          ),
         )
         .catch(onError);
     },

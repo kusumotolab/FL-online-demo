@@ -1,6 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  assetPrefix: ".",
+
+  // https://github.com/vercel/next.js/issues/18356#issuecomment-1017687918
+  images: {
+    loader: "custom",
+  },
+
   webpack: (config, { dev, isServer }) => {
     config.watchOptions = {
       poll: 1000,
