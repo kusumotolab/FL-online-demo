@@ -7,9 +7,11 @@ on:
       - main
     paths:
       - 'backend/**'
+      - '.github/workflows/backend-test-branches.yml'
   pull_request:
     paths:
       - 'backend/**'
+      - '.github/workflows/backend-test-branches.yml'
 
 jobs:
   run-test:
