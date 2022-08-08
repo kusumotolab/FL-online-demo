@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       timezone: "Asia/Tokyo"
     commit-message:
       prefix: "github-actions"
@@ -11,7 +11,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       timezone: "Asia/Tokyo"
     commit-message:
       prefix: "npm"
@@ -19,7 +19,7 @@ updates:
   - package-ecosystem: "gradle"
     directory: "/backend"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       timezone: "Asia/Tokyo"
     commit-message:
       prefix: "gradle"
