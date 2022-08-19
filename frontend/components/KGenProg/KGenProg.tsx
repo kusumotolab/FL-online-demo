@@ -1,32 +1,28 @@
 import { Ace } from "ace-builds";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
 import Editor from "@/components/Editor";
-import { useKGenProg } from "@/hooks/useKGenProg";
 import styles from "@/styles/KGenProg.module.css";
+import { Task, failure, ready, running, success } from "@/utils/task";
+
+import { useKGenProg } from "./hooks";
 
 function KGenProg({
-  src,
-  test,
-  onStart,
-  onSuccess,
-  onError,
+  sourceCode,
+  testCode,
+  setTask,
+  abortController,
   ...other
 }: {
-  src: string;
-  test: string;
-  onStart: () => void;
-  onSuccess: (() => void) | undefined;
-  onError: (() => void) | undefined;
+  sourceCode: string | undefined;
+  testCode: string | undefined;
+  setTask: Dispatch<SetStateAction<Task>>;
+  abortController?: AbortController;
 } & IAceEditorProps) {
-  const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
+  const { data, error, isLoading, isAbort } = useKGenProg(sourceCode, testCode, abortController);
 
-  const { messageHistory: kgpConsoleHistory, runKgp } = useKGenProg({
-    onStart,
-    onSuccess,
-    onError,
-  });
+  const [consoleEditor, setConsoleEditor] = useState<Ace.Editor>();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -34,8 +30,11 @@ function KGenProg({
   });
 
   useEffect(() => {
-    runKgp(src, test);
-  }, [runKgp, src, test]);
+    if (isLoading) setTask(running());
+    else if (error) setTask(failure());
+    else if (isAbort) setTask(ready());
+    else if (data) setTask(success());
+  }, [data, error, isLoading, isAbort]);
 
   return (
     <div ref={scrollRef}>
@@ -48,8 +47,8 @@ function KGenProg({
         }}
         name="console"
         readOnly
-        value={kgpConsoleHistory
-          .filter((message) => message && message.data)
+        value={data
+          ?.filter((message) => message.data)
           .map((message) => JSON.parse(message.data))
           .filter((json) => json && json.stdout)
           .map((json) => json.stdout as string)

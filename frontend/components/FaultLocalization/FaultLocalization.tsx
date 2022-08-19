@@ -1,21 +1,28 @@
 import { Button } from "@mui/material";
 import { Ace } from "ace-builds";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
 import Editor from "@/components/Editor";
-import { useFL } from "@/hooks/useFL";
+import { useFaultLocalization } from "@/components/FaultLocalization/hooks";
 import { components } from "@/schemas/backend";
 import styles from "@/styles/FL.module.css";
+import isUndefined from "@/utils/isUndefined";
+import { Task, failure, running, success } from "@/utils/task";
 
-function FL({
-  src,
-  test,
-  onSuccess,
-  onError,
+function FaultLocalization({
+  sourceCode,
+  testCode,
+  setTask,
+  abortController,
   ...other
-}: { src: string; test: string; onSuccess?: () => void; onError?: () => void } & IAceEditorProps) {
-  const { flResults, error, isLoading } = useFL(src, test);
+}: {
+  sourceCode: string | undefined;
+  testCode: string | undefined;
+  setTask: Dispatch<SetStateAction<Task>>;
+  abortController?: AbortController;
+} & IAceEditorProps) {
+  const { data, error, isLoading } = useFaultLocalization(sourceCode, testCode);
 
   const [editor, setEditor] = useState<Ace.Editor>();
   const [selectedTechnique, setSelectedTechnique] = useState("Ochiai");
@@ -31,13 +38,14 @@ function FL({
   }, []);
 
   useEffect(() => {
-    if (!isLoading && flResults && typeof onSuccess !== "undefined") onSuccess();
-    if (!isLoading && error && typeof onError !== "undefined") onError();
-  });
+    if (isLoading) setTask(running());
+    else if (error) setTask(failure());
+    else if (data) setTask(success());
+  }, [data, error, isLoading, setTask]);
 
   useEffect(() => {
-    if (isLoading) return undefined;
-    if (typeof editor === "undefined") return undefined;
+    if (isLoading) return;
+    if (isUndefined(editor)) return;
 
     const markerIds = new Set<number>();
 
@@ -49,9 +57,9 @@ function FL({
         .map((s) => s.length),
     );
 
-    flResults
+    data
       ?.filter((flResult) => flResult.technique === selectedTechnique)
-      .forEach((flResult) => {
+      ?.forEach((flResult) => {
         // flResult を lineNumber をキーとして groupBy して
         // lineNumber ごとに suspiciousness の値が最大のものを抽出
         type Suspiciousness = components["schemas"]["Suspiciousness"];
@@ -103,30 +111,24 @@ function FL({
             markerIds.add(markerId);
             // 範囲選択時の選択範囲が視認できるように alpha の最大値を 0.9 にしている
             styleElementRef.current.textContent += `
-            .${className} {
-              position: absolute;
-              background-color: rgba(225, 95, 95, ${normalizedSuspiciousness * 0.9});
-              z-index: 20;
-            }
-          `;
+              .${className} {
+                position: absolute;
+                background-color: rgba(225, 95, 95, ${normalizedSuspiciousness * 0.9});
+                z-index: 20;
+              }
+            `;
           },
         );
       });
 
     const styleElement = styleElementRef.current;
 
+    // eslint-disable-next-line consistent-return
     return () => {
       styleElement.textContent = "";
       markerIds.forEach((id) => editor.session.removeMarker(id));
     };
-  }, [selectedTechnique, editor, flResults, isLoading]);
-
-  const onClick = useCallback(
-    (technique: string) => {
-      setSelectedTechnique(technique);
-    },
-    [setSelectedTechnique],
-  );
+  }, [selectedTechnique, editor, data, isLoading]);
 
   if (error) {
     // eslint-disable-next-line no-console
@@ -143,15 +145,13 @@ function FL({
   return (
     <div ref={scrollRef}>
       <div className={styles.techniques}>
-        {flResults?.map((flResult) => {
+        {data?.map((flResult) => {
           const { technique } = flResult;
           if (typeof technique === "undefined") return "";
           return (
             <Button
               key={`${technique}-btn`}
-              onClick={() => {
-                if (typeof technique !== "undefined") onClick(technique);
-              }}
+              onClick={() => setSelectedTechnique(technique)}
               variant={selectedTechnique === technique ? "contained" : "outlined"}
             >
               {technique}
@@ -164,7 +164,7 @@ function FL({
         headerText="FL"
         name="fl"
         readOnly
-        value={src}
+        value={sourceCode}
         onLoad={(flEditor) => {
           setEditor(flEditor);
           flEditor.setShowFoldWidgets(false);
@@ -175,4 +175,4 @@ function FL({
   );
 }
 
-export default FL;
+export default FaultLocalization;

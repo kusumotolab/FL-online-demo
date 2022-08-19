@@ -3,25 +3,33 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { Ace } from "ace-builds";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { IAceEditorProps } from "react-ace";
 
 import Editor from "@/components/Editor";
-import { useTests } from "@/hooks/useTests";
 import styles from "@/styles/Coverage.module.css";
+import isUndefined from "@/utils/isUndefined";
+import { Task, failure, running, success } from "@/utils/task";
+
+import { useTest } from "./hooks";
 
 function Coverage({
-  src,
-  test,
-  onSuccess,
-  onError,
+  sourceCode,
+  testCode,
+  setTask,
+  abortController,
   ...other
-}: { src: string; test: string; onSuccess?: () => void; onError?: () => void } & IAceEditorProps) {
-  const { testResults, error, isLoading } = useTests(src, test);
-
-  const [checked, setChecked] = useState(new Map<string, boolean>());
+}: {
+  sourceCode: string | undefined;
+  testCode: string | undefined;
+  setTask: Dispatch<SetStateAction<Task>>;
+  abortController?: AbortController;
+} & IAceEditorProps) {
+  const { data, error, isLoading } = useTest(sourceCode, testCode);
 
   const [editor, setEditor] = useState<Ace.Editor>();
+
+  const [checked, setChecked] = useState(new Map<string, boolean>());
 
   const scrollRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -38,32 +46,33 @@ function Coverage({
   const yellow = "rgba(225, 225, 95, 0.5)";
 
   useEffect(() => {
-    if (!isLoading && testResults && typeof onSuccess !== "undefined") onSuccess();
-    if (!isLoading && error && typeof onError !== "undefined") onError();
-  });
+    if (isLoading) setTask(running());
+    else if (error) setTask(failure());
+    else if (data) setTask(success());
+  }, [data, error, isLoading, setTask]);
 
   useEffect(() => {
-    if (typeof testResults === "undefined") return;
+    if (isUndefined(data)) return;
     setChecked(
       new Map(
-        testResults
+        data
           .map(({ testMethod }) => testMethod)
-          .filter((testMethod) => typeof testMethod !== "undefined")
+          .filter((testMethod) => !isUndefined(testMethod))
           .map((testMethod) => [testMethod!, true]),
       ),
     );
-  }, [testResults]);
+  }, [data]);
 
   useEffect(() => {
-    if (isLoading) return undefined;
-    if (typeof editor === "undefined") return undefined;
+    if (isLoading) return;
+    if (isUndefined(editor)) return;
 
     const coverages = new Map<number, { status: string; failed: boolean }>();
-    testResults?.forEach((testResult) => {
+    data?.forEach((testResult) => {
       const { testMethod } = testResult;
 
       if (typeof testMethod === "undefined") return;
-      if (!checked.get(testMethod)) return;
+      if (!(checked.get(testMethod) ?? false)) return;
 
       testResult.coverages?.forEach((coverage) => {
         const { lineNumber } = coverage;
@@ -72,7 +81,7 @@ function Coverage({
         if (status === "EMPTY") return;
 
         if (status === "COVERED" || coverages.get(lineNumber)?.status !== "COVERED") {
-          coverages.set(lineNumber, { status, failed: testResult.failed || false });
+          coverages.set(lineNumber, { status, failed: testResult.failed ?? false });
         }
       });
     });
@@ -91,21 +100,22 @@ function Coverage({
       const markerId = editor.session.addMarker(range, className, "fullLine");
       markerIds.add(markerId);
       styleElementRef.current.textContent += `
-          .${className} {
-            position: absolute;
-            background-color: ${status !== "COVERED" ? yellow : failed ? red : green};
-            z-index: 20;
-          }
-        `;
+        .${className} {
+          position: absolute;
+          background-color: ${status !== "COVERED" ? yellow : failed ? red : green};
+          z-index: 20;
+        }
+      `;
     });
 
     const styleElement = styleElementRef.current;
 
+    // eslint-disable-next-line consistent-return
     return () => {
       styleElement.textContent = "";
       markerIds.forEach((id) => editor.session.removeMarker(id));
     };
-  }, [editor, testResults, checked, isLoading]);
+  }, [editor, data, checked, isLoading]);
 
   if (error) {
     // eslint-disable-next-line no-console
@@ -127,7 +137,7 @@ function Coverage({
           headerText="Coverage"
           name="coverage"
           readOnly
-          value={src}
+          value={sourceCode}
           onLoad={(coverageEditor) => {
             setEditor(coverageEditor);
             coverageEditor.setShowFoldWidgets(false);
@@ -182,7 +192,7 @@ function Coverage({
           }
         />
         <div className={styles.testMethods}>
-          {testResults?.map((testResult) => {
+          {data?.map((testResult) => {
             const { testMethod } = testResult;
             if (typeof testMethod === "undefined") return "";
 
@@ -194,7 +204,7 @@ function Coverage({
                 label={
                   <span className={styles.test}>
                     {testMethod}
-                    {failed ? (
+                    {failed ?? false ? (
                       <CancelIcon className={styles.icon} color="error" />
                     ) : (
                       <CheckCircleIcon className={styles.icon} color="success" />
@@ -203,7 +213,7 @@ function Coverage({
                 }
                 control={
                   <Checkbox
-                    checked={!!checked.get(testMethod)}
+                    checked={checked.get(testMethod) ?? false}
                     onChange={(event) =>
                       setChecked((prev) => {
                         return new Map(prev).set(event.target.name, event.target.checked);
