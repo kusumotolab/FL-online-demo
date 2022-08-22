@@ -2,22 +2,21 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 import { styled } from "@mui/material/styles";
 import { Ace } from "ace-builds";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useState } from "react";
 
-import Coverage from "@/components/Coverage";
+import { Button } from "@/components/Button";
+import { Coverage } from "@/components/Coverage";
 import Editor from "@/components/Editor";
-import FL from "@/components/FL";
+import { FaultLocalization } from "@/components/FaultLocalization";
 import Image from "@/components/Image";
-import KGenProg from "@/components/KGenProg";
-import useForceUpdate from "@/hooks/useForceUpdate";
+import { KGenProg } from "@/components/KGenProg";
 import styles from "@/styles/Home.module.css";
 import * as LocalStorage from "@/utils/LocalStorage";
+import { Task, isReady, ready, start } from "@/utils/task";
 
 const HoverableGitHubIcon = styled(GitHubIcon)({
   "&:hover": {
@@ -25,17 +24,21 @@ const HoverableGitHubIcon = styled(GitHubIcon)({
   },
 });
 
+let sourceCode: string | undefined;
+let testCode: string | undefined;
+
 const Home: NextPage = () => {
-  const [srcEditor, setSrcEditor] = useState<Ace.Editor>();
-  const [testEditor, setTestEditor] = useState<Ace.Editor>();
+  const [repair, setRepair] = useState<Task>(ready());
+  const [fl, setFl] = useState<Task>(ready());
+  const [test, setTest] = useState<Task>(ready());
 
-  const [isRunning, setIsRunning] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [ctrl, setCtrl] = useState<"repair" | "fl" | "test" | null>(null);
-  const forceUpdate = useForceUpdate();
+  const [abortController, setAbortController] = useState(new AbortController());
+  const abort = useCallback(() => {
+    abortController.abort();
+    setAbortController(new AbortController());
+  }, [abortController]);
 
-  const setText = useCallback((text: string, editor: Ace.Editor) => {
+  const insertText = useCallback((text: string, editor: Ace.Editor) => {
     editor.insert(text);
     editor.gotoLine(1, 0, false);
     editor.getSession().getUndoManager().reset();
@@ -45,46 +48,34 @@ const Home: NextPage = () => {
     (uri: RequestInfo, editor: Ace.Editor) => {
       void fetch(uri)
         .then((resp) => resp.text())
-        .then((text) => setText(text, editor));
+        .then((text) => insertText(text, editor));
     },
-    [setText],
+    [insertText],
   );
 
-  const onSuccess = useCallback(() => {
-    setIsRunning(false);
-    setIsSuccess(true);
-    setIsError(false);
-  }, []);
-  const onError = useCallback(() => {
-    setIsRunning(false);
-    setIsSuccess(false);
-    setIsError(true);
-  }, []);
-
   const onClickRepair = useCallback(() => {
-    setCtrl("repair");
-    forceUpdate();
-  }, [forceUpdate]);
+    abort();
+
+    setRepair(start());
+    setFl(ready());
+    setTest(ready());
+  }, [abort]);
 
   const onClickFL = useCallback(() => {
-    setCtrl("fl");
-    setIsRunning(true);
-    forceUpdate();
-  }, [forceUpdate]);
+    abort();
+
+    setRepair(ready());
+    setFl(start());
+    setTest(ready());
+  }, [abort]);
 
   const onClickTest = useCallback(() => {
-    setCtrl("test");
-    setIsRunning(true);
-    forceUpdate();
-  }, [forceUpdate]);
+    abort();
 
-  const onStartRepair = useCallback(() => {
-    setIsRunning(true);
-  }, []);
-
-  const isRepairLoading = ctrl === "repair" && isRunning;
-  const isFLLoading = ctrl === "fl" && isRunning;
-  const isTestLoading = ctrl === "test" && isRunning;
+    setRepair(ready());
+    setFl(ready());
+    setTest(start());
+  }, [abort]);
 
   return (
     <div className={styles.container}>
@@ -95,7 +86,7 @@ const Home: NextPage = () => {
 
       <header id={styles.logo}>
         <div style={{ position: "relative", width: "4rem", height: "90%" }}>
-          <Image src="./logo.png" layout="fill" objectFit="contain" alt="logo" />
+          <Image src="./logo.png" layout="fill" objectFit="contain" alt="logo" unoptimized />
         </div>
         <a
           className={styles.title}
@@ -116,37 +107,13 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div id={styles.ctrl}>
-          <Button
-            onClick={onClickRepair}
-            startIcon={isRepairLoading ? <CircularProgress color="inherit" /> : <AutoFixHighIcon />}
-            color={
-              ctrl !== "repair" ? "primary" : isSuccess ? "success" : isError ? "error" : "primary"
-            }
-            variant={ctrl === "repair" ? "contained" : "outlined"}
-            disabled={isRunning}
-          >
+          <Button task={repair} icon={<AutoFixHighIcon />} onClick={onClickRepair}>
             Repair
           </Button>
-          <Button
-            onClick={onClickFL}
-            startIcon={isFLLoading ? <CircularProgress color="inherit" /> : <BugReportIcon />}
-            color={
-              ctrl !== "fl" ? "primary" : isSuccess ? "success" : isError ? "error" : "primary"
-            }
-            variant={ctrl === "fl" ? "contained" : "outlined"}
-            disabled={isRunning}
-          >
+          <Button task={fl} icon={<BugReportIcon />} onClick={onClickFL}>
             FL
           </Button>
-          <Button
-            onClick={onClickTest}
-            startIcon={isTestLoading ? <CircularProgress color="inherit" /> : <PlayArrowIcon />}
-            color={
-              ctrl !== "test" ? "primary" : isSuccess ? "success" : isError ? "error" : "primary"
-            }
-            variant={ctrl === "test" ? "contained" : "outlined"}
-            disabled={isRunning}
-          >
+          <Button task={test} icon={<PlayArrowIcon />} onClick={onClickTest}>
             Test
           </Button>
         </div>
@@ -155,62 +122,59 @@ const Home: NextPage = () => {
           <Editor
             headerText="Source"
             onLoad={(editor) => {
-              setSrcEditor(editor);
-
               const cache = LocalStorage.getItem(LocalStorage.KEY.SRC);
               if (cache === null) {
                 loadDefaultSrc("default-src.java", editor);
               } else {
-                setText(cache, editor);
+                insertText(cache, editor);
               }
             }}
             onChange={(value) => {
               LocalStorage.setItem(LocalStorage.KEY.SRC, value);
+              sourceCode = value;
             }}
             name="src"
+            value={sourceCode}
           />
           <Editor
             headerText="Test"
             onLoad={(editor) => {
-              setTestEditor(editor);
-
               const cache = LocalStorage.getItem(LocalStorage.KEY.TEST);
               if (cache === null) {
                 loadDefaultSrc("default-test.java", editor);
               } else {
-                setText(cache, editor);
+                insertText(cache, editor);
               }
             }}
             onChange={(value) => {
               LocalStorage.setItem(LocalStorage.KEY.TEST, value);
+              testCode = value;
             }}
             name="test"
+            value={testCode}
           />
         </div>
 
-        {typeof srcEditor === "undefined" || typeof testEditor === "undefined" ? (
-          ""
-        ) : ctrl === "repair" ? (
+        {!isReady(repair) ? (
           <KGenProg
-            src={srcEditor.getValue()}
-            test={testEditor.getValue()}
-            onStart={onStartRepair}
-            onSuccess={onSuccess}
-            onError={onError}
+            sourceCode={sourceCode}
+            testCode={testCode}
+            setTask={setRepair}
+            abortController={abortController}
           />
-        ) : ctrl === "fl" ? (
-          <FL
-            src={srcEditor.getValue()}
-            test={testEditor.getValue()}
-            onSuccess={onSuccess}
-            onError={onError}
+        ) : !isReady(fl) ? (
+          <FaultLocalization
+            sourceCode={sourceCode}
+            testCode={testCode}
+            setTask={setFl}
+            abortController={abortController}
           />
-        ) : ctrl === "test" ? (
+        ) : !isReady(test) ? (
           <Coverage
-            src={srcEditor.getValue()}
-            test={testEditor.getValue()}
-            onSuccess={onSuccess}
-            onError={onError}
+            sourceCode={sourceCode}
+            testCode={testCode}
+            setTask={setTest}
+            abortController={abortController}
           />
         ) : (
           ""
