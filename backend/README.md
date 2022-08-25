@@ -15,12 +15,13 @@
 java -jar backend/build/libs/fldemo-*-all.jar
 ```
 
-## Swagger UI
+## REST API Documentation
+Swagger UIで確認できます  
 プログラム起動後にWebブラウザで
 http://localhost:8080/swagger-ui/index.html
 にアクセス
 
-## OpenAPI Speficificationの確認方法
+## OpenAPI Speficification
 ```shell
 curl http://localhost:8080/v3/api-docs
 ```
