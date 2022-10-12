@@ -1,4 +1,4 @@
-FROM openjdk:17-slim AS base
+FROM eclipse-temurin:17-jdk-alpine AS base
 
 #for compose.override
 FROM base AS dev
@@ -18,7 +18,7 @@ COPY src/ /backend/src/
 RUN ./gradlew shadowJar
 
 
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /backend
 
