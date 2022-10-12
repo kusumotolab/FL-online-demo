@@ -7,28 +7,16 @@ import jp.kusumotolab.fldemo.common.SourceUtil;
 import jp.kusumotolab.kgenprog.project.FullyQualifiedName;
 import jp.kusumotolab.kgenprog.project.test.TestResult;
 
-public record TestResultWithCoverage (
+public record TestResultWithCoverage(
+    @JsonProperty("testMethod") String testMethod,
+    @JsonProperty("testOrder") int testOrder,
+    @JsonProperty("coverages") List<Coverage> coverages,
+    @JsonProperty("executedTestFQN") String executedTestFQN,
+    @JsonProperty("failed") boolean failed,
+    @JsonProperty("failedReason") String failedReason) {
 
-  @JsonProperty("testMethod")
- String testMethod,
-
-  @JsonProperty("testOrder")
-   int testOrder,
-
-  @JsonProperty("coverages")
-   List<Coverage> coverages,
-
-  @JsonProperty("executedTestFQN")
- String executedTestFQN,
-
-  @JsonProperty("failed")
-  boolean failed,
-
-  @JsonProperty("failedReason")
-  String failedReason
-){
-
-  public static TestResultWithCoverage valueOf(final TestResult testResult, final String src, final List<String> testOrderList) {
+  public static TestResultWithCoverage valueOf(
+      final TestResult testResult, final String src, final List<String> testOrderList) {
     final String executedTestFQN = testResult.executedTestFQN.value;
     final String testMethod = SourceUtil.inferMethodNameFromFQN(executedTestFQN);
     final int testOrder = testOrderList.indexOf(testMethod);
@@ -42,7 +30,8 @@ public record TestResultWithCoverage (
             .flatMap(List::stream)
             .toList();
 
-    return new TestResultWithCoverage(testMethod, testOrder, coverages, executedTestFQN, failed, failedReason);
+    return new TestResultWithCoverage(
+        testMethod, testOrder, coverages, executedTestFQN, failed, failedReason);
   }
 
   public static List<Coverage> makeCoverages(

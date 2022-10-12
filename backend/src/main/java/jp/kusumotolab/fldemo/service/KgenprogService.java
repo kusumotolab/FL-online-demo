@@ -76,7 +76,7 @@ public class KgenprogService {
 
     if (!initialVariant.isBuildSucceeded()) {
       String errMsg = "built failed";
-      if(initialVariant.getTestResults() instanceof EmptyTestResults emptyTestResults){
+      if (initialVariant.getTestResults() instanceof EmptyTestResults emptyTestResults) {
         errMsg += ": " + emptyTestResults.getCause();
       }
       log.warn(project.projectDir().toString() + errMsg);
