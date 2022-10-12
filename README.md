@@ -7,5 +7,5 @@ https://tyr.ics.es.osaka-u.ac.jp/fldemo/
 ```shell
 git clone https://github.com/kusumotolab/FL-online-demo.git
 cd FL-online-demo
-docker compose -f ./compose.yml up --build
+./run.sh
 ```
