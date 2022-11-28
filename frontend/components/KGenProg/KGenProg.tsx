@@ -40,7 +40,7 @@ function KGenProg({
     <div ref={scrollRef}>
       <Editor
         className={styles.editorConsole}
-        headerText="Console"
+        headerText="APR log"
         onLoad={(editor) => {
           setConsoleEditor(editor);
           editor.setShowFoldWidgets(false);
