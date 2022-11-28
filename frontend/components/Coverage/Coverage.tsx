@@ -157,7 +157,7 @@ function Coverage({
               className={styles.colorBox}
               style={{ width: "2em", height: "1em", backgroundColor: green }}
             />
-            <span className={styles.colorDescription}>covered & test pass</span>
+            <span className={styles.colorDescription}>covered & test passed</span>
           </div>
           <div className={styles.colorExample}>
             <div
