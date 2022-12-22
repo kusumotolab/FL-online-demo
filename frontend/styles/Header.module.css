@@ -1,0 +1,32 @@
+#logo {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.1em 1em;
+  background-color: #343440;
+  height: 4rem;
+}
+
+#logo img {
+  width: 60px;
+}
+
+.title h1 {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  padding-left: 0.3em;
+  font-family: arial, sans-serif;
+  font-size: x-large;
+  font-weight: bold;
+  color: var(--header-contents-color);
+}
+
+.title:hover h1 {
+  color: var(--header-contents-color-hovered);
+}
+
+.icons {
+  margin-right: 1rem;
+  margin-left: auto;
+}

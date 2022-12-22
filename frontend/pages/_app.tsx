@@ -1,7 +1,9 @@
-import "@/styles/globals.css";
+import type {} from "@mui/lab/themeAugmentation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import type { AppProps } from "next/app";
-import type {} from "@mui/lab/themeAugmentation";
+
+import { Header } from "@/components/Header";
+import "@/styles/globals.css";
 
 const theme = createTheme({
   components: {
@@ -18,8 +20,8 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           padding: "0.1em",
-        }
-      }
+        },
+      },
     },
     MuiSvgIcon: {
       styleOverrides: {
@@ -31,12 +33,13 @@ const theme = createTheme({
   },
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
+      <Header />
       <Component {...pageProps} />
     </ThemeProvider>
   );
 }
 
-export default MyApp;
+export default App;
