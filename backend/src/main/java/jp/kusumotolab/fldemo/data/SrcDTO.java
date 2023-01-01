@@ -9,7 +9,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotBlank;
 
 @Schema(description = "source and tests to exec")
-public record SrcAndTests(
+public record SrcDTO(
     @Schema(
             required = true,
             description = "source code to exec",
@@ -41,11 +41,11 @@ public record SrcAndTests(
       return this;
     }
 
-    public SrcAndTests build() {
+    public SrcDTO build() {
       Objects.requireNonNull(this.src);
       Objects.requireNonNull(this.test);
 
-      return new SrcAndTests(src, test);
+      return new SrcDTO(src, test);
     }
   }
 }

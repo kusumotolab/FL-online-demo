@@ -7,7 +7,7 @@ import java.util.Random;
 import jp.kusumotolab.fldemo.common.FlKind;
 import jp.kusumotolab.fldemo.data.FlResult;
 import jp.kusumotolab.fldemo.data.Project;
-import jp.kusumotolab.fldemo.data.SrcAndTests;
+import jp.kusumotolab.fldemo.data.SrcDTO;
 import jp.kusumotolab.fldemo.data.TestResultWithCoverage;
 import jp.kusumotolab.kgenprog.Configuration;
 import jp.kusumotolab.kgenprog.Configuration.Builder;
@@ -32,8 +32,8 @@ public class KgenprogService {
 
   private Project project;
 
-  public List<FlResult> execFl(final SrcAndTests st) {
-    initProject(st);
+  public List<FlResult> execFl(final SrcDTO dto) {
+    initProject(dto);
     final Variant initialVariant = createInitialVariant();
 
     return Arrays.stream(FlKind.values())
@@ -41,8 +41,8 @@ public class KgenprogService {
         .toList();
   }
 
-  public List<TestResultWithCoverage> execTests(final SrcAndTests st) {
-    initProject(st);
+  public List<TestResultWithCoverage> execTests(final SrcDTO dto) {
+    initProject(dto);
     final Variant initialVariant = createInitialVariant();
     final TestResults testResults = initialVariant.getTestResults();
 
@@ -53,8 +53,8 @@ public class KgenprogService {
         .toList();
   }
 
-  private void initProject(final SrcAndTests st) {
-    project = Project.build(st);
+  private void initProject(final SrcDTO dto) {
+    project = Project.build(dto);
     log.info("Built project " + project);
   }
 

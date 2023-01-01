@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import jp.kusumotolab.fldemo.data.SrcAndTests;
+import jp.kusumotolab.fldemo.data.SrcDTO;
 import jp.kusumotolab.fldemo.data.TestResultWithCoverage;
 import jp.kusumotolab.fldemo.service.KgenprogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class TestController {
             content = @Content(mediaType = "application/json", schema = @Schema(hidden = true)))
       })
   @PostMapping
-  public List<TestResultWithCoverage> execTests(@Validated @RequestBody SrcAndTests st) {
-    return kgenprogService.execTests(st);
+  public List<TestResultWithCoverage> execTests(@Validated @RequestBody SrcDTO dto) {
+    return kgenprogService.execTests(dto);
   }
 }

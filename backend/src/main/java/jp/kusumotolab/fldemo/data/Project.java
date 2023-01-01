@@ -29,22 +29,22 @@ public record Project(
   @Builder
   public Project {} // workaround for intellij's issue on record and lombok.Builder
 
-  public static Project build(final SrcAndTests st) {
-    final ProjectBuilder projectBuilder = new ProjectBuilder().src(st.src());
+  public static Project build(final SrcDTO dto) {
+    final ProjectBuilder projectBuilder = new ProjectBuilder().src(dto.src());
 
-    final String srcFQN = SourceUtil.inferFQN(st.src());
-    projectBuilder.srcFQN(srcFQN).srcClassName(SourceUtil.inferClassName(st.src()));
+    final String srcFQN = SourceUtil.inferFQN(dto.src());
+    projectBuilder.srcFQN(srcFQN).srcClassName(SourceUtil.inferClassName(dto.src()));
 
-    final String srcPackageName = SourceUtil.inferPackageName(st.src());
+    final String srcPackageName = SourceUtil.inferPackageName(dto.src());
     projectBuilder.srcPackageName(srcPackageName);
 
-    final String testFQN = SourceUtil.inferFQN(st.test());
+    final String testFQN = SourceUtil.inferFQN(dto.test());
     projectBuilder
-        .test(st.test())
+        .test(dto.test())
         .testFQN(testFQN)
-        .testClassName(SourceUtil.inferClassName(st.test()))
-        .testPackageName(SourceUtil.inferPackageName(st.test()))
-        .testMethods(inferAndValidateTestMethods(st.test()));
+        .testClassName(SourceUtil.inferClassName(dto.test()))
+        .testPackageName(SourceUtil.inferPackageName(dto.test()))
+        .testMethods(inferAndValidateTestMethods(dto.test()));
 
     try {
       final Path projectDir = Files.createTempDirectory("fldemo_");
@@ -54,11 +54,11 @@ public record Project(
       Files.createDirectories(srcDir);
 
       final Path srcPath = projectDir.resolve(srcFQN);
-      Files.writeString(srcPath, st.src());
+      Files.writeString(srcPath, dto.src());
       projectBuilder.srcPath(srcPath);
 
       final Path testPath = projectDir.resolve(testFQN);
-      Files.writeString(testPath, st.test());
+      Files.writeString(testPath, dto.test());
       projectBuilder.testPath(testPath);
     } catch (IOException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);

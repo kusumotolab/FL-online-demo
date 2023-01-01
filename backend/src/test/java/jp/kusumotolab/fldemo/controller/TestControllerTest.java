@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jp.kusumotolab.fldemo.data.SrcAndTests;
+import jp.kusumotolab.fldemo.data.SrcDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +26,12 @@ class TestControllerTest {
 
   @Test
   void testEmpty() throws Exception {
-    var st = new SrcAndTests("", "");
+    var dto = new SrcDTO("", "");
 
     mockMvc
         .perform(
             post("/api/test")
-                .content(objectMapper.writeValueAsString(st))
+                .content(objectMapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isBadRequest());
@@ -39,8 +39,8 @@ class TestControllerTest {
 
   @Test
   void testBuildFailure01() throws Exception {
-    final SrcAndTests st =
-        new SrcAndTests.Builder()
+    final SrcDTO dto =
+        new SrcDTO.Builder()
             .srcFromPath("example/BuildFailure01/src/example/NonCompilable.java")
             .testFromPath("example/BuildSuccess01/src/example/FooTest.java") // Compilable test
             .build();
@@ -48,7 +48,7 @@ class TestControllerTest {
     mockMvc
         .perform(
             post("/api/test")
-                .content(objectMapper.writeValueAsString(st))
+                .content(objectMapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isBadRequest());
@@ -56,15 +56,15 @@ class TestControllerTest {
 
   @Test
   void testBuildSuccess01() throws Exception {
-    final SrcAndTests st =
-        new SrcAndTests.Builder()
+    final SrcDTO dto =
+        new SrcDTO.Builder()
             .srcFromPath("example/BuildSuccess01/src/example/Foo.java")
             .testFromPath("example/BuildSuccess01/src/example/FooTest.java")
             .build();
     mockMvc
         .perform(
             post("/api/test")
-                .content(objectMapper.writeValueAsString(st))
+                .content(objectMapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk());
@@ -72,15 +72,15 @@ class TestControllerTest {
 
   @Test
   void testCloseToZero01() throws Exception {
-    final SrcAndTests st =
-        new SrcAndTests.Builder()
+    final SrcDTO dto =
+        new SrcDTO.Builder()
             .srcFromPath("example/CloseToZero01/src/com/example/CloseToZero.java")
             .testFromPath("example/CloseToZero01/src/com/example/CloseToZeroTest.java")
             .build();
     mockMvc
         .perform(
             post("/api/test")
-                .content(objectMapper.writeValueAsString(st))
+                .content(objectMapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isOk());
@@ -88,8 +88,8 @@ class TestControllerTest {
 
   @Test
   void testNotContainsPackageName01() throws Exception {
-    final SrcAndTests st =
-        new SrcAndTests.Builder()
+    final SrcDTO dto =
+        new SrcDTO.Builder()
             .srcFromPath("example/NotContainsPackageName01/Foo.java")
             .testFromPath("example/NotContainsPackageName01/FooTest.java")
             .build();
@@ -97,7 +97,7 @@ class TestControllerTest {
     mockMvc
         .perform(
             post("/api/test")
-                .content(objectMapper.writeValueAsString(st))
+                .content(objectMapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isBadRequest());
@@ -105,8 +105,8 @@ class TestControllerTest {
 
   @Test
   void testNotContainsTest01() throws Exception {
-    final SrcAndTests st =
-        new SrcAndTests.Builder()
+    final SrcDTO dto =
+        new SrcDTO.Builder()
             .srcFromPath("example/NotContainsTest01/src/example/Foo.java")
             .testFromPath("example/NotContainsTest01/src/example/FooTest.java")
             .build();
@@ -114,7 +114,7 @@ class TestControllerTest {
     mockMvc
         .perform(
             post("/api/test")
-                .content(objectMapper.writeValueAsString(st))
+                .content(objectMapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON))
         .andDo(print())
         .andExpect(status().isBadRequest());
