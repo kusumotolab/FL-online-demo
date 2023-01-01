@@ -1,4 +1,4 @@
-package jp.kusumotolab.fldemo.data;
+package jp.kusumotolab.fldemo.data.project;
 
 import java.util.List;
 import jp.kusumotolab.fldemo.common.SourceUtil;

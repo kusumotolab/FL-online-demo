@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
 import java.util.List;
 import jp.kusumotolab.fldemo.common.FlKind;
-import jp.kusumotolab.fldemo.data.FlResult;
+import jp.kusumotolab.fldemo.data.fl.FlResult;
 import jp.kusumotolab.fldemo.data.SrcDTO;
 import jp.kusumotolab.fldemo.service.KgenprogService;
 import org.springframework.beans.factory.annotation.Autowired;

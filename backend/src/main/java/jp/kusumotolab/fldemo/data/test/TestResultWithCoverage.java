@@ -1,4 +1,4 @@
-package jp.kusumotolab.fldemo.data;
+package jp.kusumotolab.fldemo.data.test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;

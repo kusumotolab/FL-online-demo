@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import jp.kusumotolab.fldemo.data.SrcDTO;
-import jp.kusumotolab.fldemo.data.TestResultWithCoverage;
+import jp.kusumotolab.fldemo.data.test.TestResultWithCoverage;
 import jp.kusumotolab.fldemo.service.KgenprogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

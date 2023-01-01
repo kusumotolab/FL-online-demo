@@ -1,4 +1,4 @@
-package jp.kusumotolab.fldemo.data;
+package jp.kusumotolab.fldemo.data.project;
 
 import java.io.IOException;
 import java.nio.file.Files;
