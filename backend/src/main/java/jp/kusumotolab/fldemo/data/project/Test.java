@@ -1,7 +1,10 @@
 package jp.kusumotolab.fldemo.data.project;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import jp.kusumotolab.fldemo.common.SourceUtil;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,10 +19,21 @@ public class Test extends Src {
   }
 
   private static List<String> inferAndValidateTestMethods(String test) {
-    final List<String> testMethods = SourceUtil.inferTestMethodNames(test);
+    final List<String> testMethods = inferTestMethodNames(test);
     if (testMethods.size() == 0) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to find test Methods");
     }
     return testMethods;
+  }
+
+  private static List<String> inferTestMethodNames(final String test) {
+    final Pattern p = Pattern.compile("@Test\\s*(public )?void (\\S+)\\(\\)");
+    final Matcher m = p.matcher(test);
+    if (!m.find()) return Collections.emptyList();
+    final List<String> testMethodName = new ArrayList<>();
+    do {
+      testMethodName.add(m.group(2));
+    } while (m.find());
+    return testMethodName;
   }
 }
