@@ -24,14 +24,10 @@ public record Project(Src src, Test test, Path projectDir, Path srcPath, Path te
       final Path projectDir = Files.createTempDirectory("fldemo_");
       projectBuilder.projectDir(projectDir);
 
-      final Path srcPath = projectDir.resolve(src.getFqn());
-      Files.createDirectories(srcPath.getParent());
-      Files.writeString(srcPath, src.getSrc());
+      final Path srcPath = src.createSrcFile(projectDir);
       projectBuilder.srcPath(srcPath);
 
-      final Path testPath = projectDir.resolve(test.getFqn());
-      Files.createDirectories(testPath.getParent());
-      Files.writeString(testPath, test.getSrc());
+      final Path testPath = test.createSrcFile(projectDir);
       projectBuilder.testPath(testPath);
 
     } catch (final IOException e) {

@@ -1,5 +1,8 @@
 package jp.kusumotolab.fldemo.data;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import jp.kusumotolab.fldemo.common.SourceUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +22,12 @@ public class Src {
         SourceUtil.inferFQN(src),
         SourceUtil.inferClassName(src),
         SourceUtil.inferPackageName(src));
+  }
+
+  public Path createSrcFile(final Path parentPath) throws IOException {
+    final Path srcPath = parentPath.resolve(this.getFqn());
+    Files.createDirectories(srcPath.getParent());
+    Files.writeString(srcPath, this.getSrc());
+    return srcPath;
   }
 }
