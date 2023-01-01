@@ -48,7 +48,10 @@ public class KgenprogService {
 
     return testResults.getExecutedTestFQNs().stream()
         .map(testResults::getTestResult)
-        .map(e -> TestResultWithCoverage.valueOf(e, project.src(), project.testMethods()))
+        .map(
+            e ->
+                TestResultWithCoverage.valueOf(
+                    e, project.src().getSrc(), project.test().getTestMethods()))
         .sorted(Comparator.comparing(TestResultWithCoverage::testOrder))
         .toList();
   }

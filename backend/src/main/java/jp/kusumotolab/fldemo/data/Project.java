@@ -1,77 +1,43 @@
 package jp.kusumotolab.fldemo.data;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import jp.kusumotolab.fldemo.common.SourceUtil;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
-public record Project(
-    String src,
-    String srcFQN,
-    String srcClassName,
-    String srcPackageName,
-    String test,
-    String testFQN,
-    String testClassName,
-    String testPackageName,
-    List<String> testMethods,
-    Path projectDir,
-    Path srcPath,
-    Path testPath) {
+public record Project(Src src, Test test, Path projectDir, Path srcPath, Path testPath) {
 
   @Builder
   public Project {} // workaround for intellij's issue on record and lombok.Builder
 
   public static Project build(final SrcDTO dto) {
-    final ProjectBuilder projectBuilder = new ProjectBuilder().src(dto.src());
+    final var src = new Src(dto.src());
+    final var test = new Test(dto.test());
 
-    final String srcFQN = SourceUtil.inferFQN(dto.src());
-    projectBuilder.srcFQN(srcFQN).srcClassName(SourceUtil.inferClassName(dto.src()));
-
-    final String srcPackageName = SourceUtil.inferPackageName(dto.src());
-    projectBuilder.srcPackageName(srcPackageName);
-
-    final String testFQN = SourceUtil.inferFQN(dto.test());
-    projectBuilder
-        .test(dto.test())
-        .testFQN(testFQN)
-        .testClassName(SourceUtil.inferClassName(dto.test()))
-        .testPackageName(SourceUtil.inferPackageName(dto.test()))
-        .testMethods(inferAndValidateTestMethods(dto.test()));
+    final ProjectBuilder projectBuilder = new ProjectBuilder().src(src).test(test);
 
     try {
       final Path projectDir = Files.createTempDirectory("fldemo_");
       projectBuilder.projectDir(projectDir);
 
-      final Path srcDir = projectDir.resolve(srcPackageName.replace(".", File.separator));
-      Files.createDirectories(srcDir);
-
-      final Path srcPath = projectDir.resolve(srcFQN);
-      Files.writeString(srcPath, dto.src());
+      final Path srcPath = projectDir.resolve(src.getFqn());
+      Files.createDirectories(srcPath.getParent());
+      Files.writeString(srcPath, src.getSrc());
       projectBuilder.srcPath(srcPath);
 
-      final Path testPath = projectDir.resolve(testFQN);
-      Files.writeString(testPath, dto.test());
+      final Path testPath = projectDir.resolve(test.getFqn());
+      Files.createDirectories(testPath.getParent());
+      Files.writeString(testPath, test.getSrc());
       projectBuilder.testPath(testPath);
-    } catch (IOException e) {
+
+    } catch (final IOException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return projectBuilder.build();
-  }
-
-  private static List<String> inferAndValidateTestMethods(String test) {
-    final List<String> testMethods = SourceUtil.inferTestMethodNames(test);
-    if (testMethods.size() == 0) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to find test Methods");
-    }
-    return testMethods;
   }
 }
