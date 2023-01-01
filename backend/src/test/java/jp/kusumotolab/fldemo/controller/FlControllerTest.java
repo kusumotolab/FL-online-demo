@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jp.kusumotolab.fldemo.TestUtil;
 import jp.kusumotolab.fldemo.data.SrcDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,10 +41,10 @@ class FlControllerTest {
   @Test
   void testBuildFailure01() throws Exception {
     final SrcDTO dto =
-        new SrcDTO.Builder()
-            .srcFromPath("example/BuildFailure01/src/example/NonCompilable.java")
-            .testFromPath("example/BuildSuccess01/src/example/FooTest.java") // Compilable test
-            .build();
+        TestUtil.buildFromFiles(
+            "example/BuildFailure01/src/example/NonCompilable.java",
+            "example/BuildSuccess01/src/example/FooTest.java" // Compilable test
+            );
 
     mockMvc
         .perform(
@@ -57,10 +58,9 @@ class FlControllerTest {
   @Test
   void testBuildSuccess01() throws Exception {
     final SrcDTO dto =
-        new SrcDTO.Builder()
-            .srcFromPath("example/BuildSuccess01/src/example/Foo.java")
-            .testFromPath("example/BuildSuccess01/src/example/FooTest.java")
-            .build();
+        TestUtil.buildFromFiles(
+            "example/BuildSuccess01/src/example/Foo.java",
+            "example/BuildSuccess01/src/example/FooTest.java");
 
     mockMvc
         .perform(
@@ -74,10 +74,9 @@ class FlControllerTest {
   @Test
   void testCloseToZero01() throws Exception {
     final SrcDTO dto =
-        new SrcDTO.Builder()
-            .srcFromPath("example/CloseToZero01/src/com/example/CloseToZero.java")
-            .testFromPath("example/CloseToZero01/src/com/example/CloseToZeroTest.java")
-            .build();
+        TestUtil.buildFromFiles(
+            "example/CloseToZero01/src/com/example/CloseToZero.java",
+            "example/CloseToZero01/src/com/example/CloseToZeroTest.java");
 
     mockMvc
         .perform(
@@ -91,10 +90,10 @@ class FlControllerTest {
   @Test
   void testNotContainsPackageName01() throws Exception {
     final SrcDTO dto =
-        new SrcDTO.Builder()
-            .srcFromPath("example/NotContainsPackageName01/Foo.java")
-            .testFromPath("example/NotContainsPackageName01/FooTest.java")
-            .build();
+        TestUtil.buildFromFiles(
+            "example/NotContainsPackageName01/Foo.java",
+            "example/NotContainsPackageName01/FooTest.java");
+
     mockMvc
         .perform(
             post("/api/fl/all")
@@ -107,10 +106,9 @@ class FlControllerTest {
   @Test
   void testNotContainsTest01() throws Exception {
     final SrcDTO dto =
-        new SrcDTO.Builder()
-            .srcFromPath("example/NotContainsTest01/src/example/Foo.java")
-            .testFromPath("example/NotContainsTest01/src/example/FooTest.java")
-            .build();
+        TestUtil.buildFromFiles(
+            "example/NotContainsTest01/src/example/Foo.java",
+            "example/NotContainsTest01/src/example/FooTest.java");
 
     mockMvc
         .perform(
