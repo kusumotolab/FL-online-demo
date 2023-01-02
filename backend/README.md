@@ -21,7 +21,7 @@ Swagger UIで確認できます
 http://localhost:8080/swagger-ui/index.html
 にアクセス
 
-## OpenAPI Speficification
+## OpenAPI Specification
 ```shell
 curl http://localhost:8080/v3/api-docs
 ```
