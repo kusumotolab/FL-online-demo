@@ -5,11 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-@Getter
 public class Test extends Src {
   final List<String> testMethods;
 
@@ -35,5 +33,9 @@ public class Test extends Src {
       testMethodName.add(m.group(2));
     } while (m.find());
     return testMethodName;
+  }
+
+  public List<String> getTestMethods() {
+    return testMethods;
   }
 }

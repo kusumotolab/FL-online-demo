@@ -6,13 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-@RequiredArgsConstructor
-@Getter
 public class Src {
 
   private final String src;
@@ -22,6 +18,13 @@ public class Src {
 
   public Src(final String src) {
     this(src, inferFQN(src), inferClassName(src), inferPackageName(src));
+  }
+
+  public Src(String src, String fqn, String className, String packageName) {
+    this.src = src;
+    this.fqn = fqn;
+    this.className = className;
+    this.packageName = packageName;
   }
 
   private static String inferFQN(final String src) {
@@ -52,6 +55,22 @@ public class Src {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
     }
     return s;
+  }
+
+  public String getSrc() {
+    return src;
+  }
+
+  public String getFqn() {
+    return fqn;
+  }
+
+  public String getClassName() {
+    return className;
+  }
+
+  public String getPackageName() {
+    return packageName;
   }
 
   public Path createSrcFile(final Path parentPath) throws IOException {
