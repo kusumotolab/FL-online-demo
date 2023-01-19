@@ -1,9 +1,8 @@
-package jp.kusumotolab.fldemo.data;
+package jp.kusumotolab.fldemo.data.test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
-import jp.kusumotolab.fldemo.common.SourceUtil;
 import jp.kusumotolab.kgenprog.project.FullyQualifiedName;
 import jp.kusumotolab.kgenprog.project.test.TestResult;
 
@@ -18,7 +17,7 @@ public record TestResultWithCoverage(
   public static TestResultWithCoverage valueOf(
       final TestResult testResult, final String src, final List<String> testOrderList) {
     final String executedTestFQN = testResult.executedTestFQN.value;
-    final String testMethod = SourceUtil.inferMethodNameFromFQN(executedTestFQN);
+    final String testMethod = inferMethodNameFromFQN(executedTestFQN);
     final int testOrder = testOrderList.indexOf(testMethod);
     final boolean failed = testResult.failed;
     final String failedReason = testResult.getFailedReason();
@@ -34,7 +33,7 @@ public record TestResultWithCoverage(
         testMethod, testOrder, coverages, executedTestFQN, failed, failedReason);
   }
 
-  public static List<Coverage> makeCoverages(
+  private static List<Coverage> makeCoverages(
       final jp.kusumotolab.kgenprog.project.test.Coverage coverage, final String src) {
     final List<Coverage> ret = new ArrayList<>();
     for (int i = 0; i < coverage.getStatusesSize(); i++) {
@@ -43,6 +42,14 @@ public record TestResultWithCoverage(
       ret.add(new Coverage(lineNumber, status));
     }
     return ret;
+  }
+
+  private static String inferMethodNameFromFQN(final String FQN) {
+    final int lastIndexOf = FQN.lastIndexOf('.');
+    if (lastIndexOf == -1) {
+      return "";
+    }
+    return FQN.substring(lastIndexOf + 1);
   }
 
   private static int inferLineNumber(final FullyQualifiedName fqn, final String src) {

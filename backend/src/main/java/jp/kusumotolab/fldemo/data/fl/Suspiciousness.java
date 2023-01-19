@@ -1,4 +1,4 @@
-package jp.kusumotolab.fldemo.data;
+package jp.kusumotolab.fldemo.data.fl;
 
 import jp.kusumotolab.fldemo.common.FlKind;
 

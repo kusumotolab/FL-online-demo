@@ -10,8 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
 import java.util.List;
 import jp.kusumotolab.fldemo.common.FlKind;
-import jp.kusumotolab.fldemo.data.FlResult;
-import jp.kusumotolab.fldemo.data.SrcAndTests;
+import jp.kusumotolab.fldemo.data.SrcDTO;
+import jp.kusumotolab.fldemo.data.fl.FlResult;
 import jp.kusumotolab.fldemo.service.KgenprogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -46,8 +46,8 @@ public class FlController {
             content = @Content(mediaType = "application/json", schema = @Schema(hidden = true)))
       })
   @PostMapping("all")
-  public List<FlResult> flAll(@Validated @RequestBody SrcAndTests st) {
-    return kgenprogService.execFl(st);
+  public List<FlResult> flAll(@Validated @RequestBody SrcDTO dto) {
+    return kgenprogService.execFl(dto);
   }
 
   @Operation(
